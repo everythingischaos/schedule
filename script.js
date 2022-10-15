@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 //check if browser supports storage
 let hasStorage = false;
 if (typeof Storage !== "undefined") {
@@ -5,6 +7,33 @@ if (typeof Storage !== "undefined") {
 } else {
   hasStorage = false;
 }
+
+//Register service worker
+const registerServiceWorker = async () => {
+  if ("serviceWorker" in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register(
+        "/service-worker.js",
+        {
+          scope: "/",
+        }
+      );
+      if (registration.installing) {
+        console.log("Service worker installing");
+      } else if (registration.waiting) {
+        console.log("Service worker installed");
+      } else if (registration.active) {
+        console.log("Service worker active");
+      }
+    } catch (error) {
+      console.error(`Registration failed with ${error}`);
+    }
+  }
+};
+
+// …
+
+registerServiceWorker();
 
 //prevents caching of requested files
 $.ajaxSetup({ cache: false });
@@ -29,27 +58,56 @@ function newDebugDate() {
 }
 
 let override;
+let nextTime;
 
-//get the schedule json in case it's been updated
-fetch("https://gist.githubusercontent.com/piguyisme/e652e0a5009f17efde347c390767d069/raw/schedule.json?=" + Math.floor(Math.random() * 1000), {cache: "no-store"})
-.then(
-  async(data) => {
-    const response = await data.json();
-    if (response != defaultAllSchedules) {
-      defaultAllSchedules = response;
-      generateSchedule(defaultAllSchedules);
+function checkForChanges() {
+  //get the schedule json in case it's been updated
+  fetch(
+    "https://gist.githubusercontent.com/piguyisme/e652e0a5009f17efde347c390767d069/raw/schedule.json?=" +
+      Math.floor(Math.random() * 1000),
+    { cache: "no-store" }
+  ).then(
+    async (data) => {
+      try {
+        const response = await data.json();
+        if (response != defaultAllSchedules) {
+          defaultAllSchedules = response;
+          generateSchedule(defaultAllSchedules);
+        }
+      } catch (e) {
+        showAlert("Network error, schedule might not be up to date");
+      }
+    },
+    () => {
+      showAlert("Network error, schedule might not be up to date");
     }
-  }
-);
+  );
 
-//get the override data for rallies and stuff
-fetch("https://gist.githubusercontent.com/piguyisme/db88af35c569b7b5a8aff60c679f527c/raw/overrides.json?=" + Math.floor(Math.random() * 1000), {cache: "no-store"})
-.then(
-  async(data) => {
-    override = await data.json();
-    generateSchedule(defaultAllSchedules);
-  }
-);
+  //get the override data for rallies and stuff
+  fetch(
+    "https://gist.githubusercontent.com/piguyisme/db88af35c569b7b5a8aff60c679f527c/raw/overrides.json?=" +
+      Math.floor(Math.random() * 1000),
+    { cache: "no-store" }
+  ).then(
+    async (data) => {
+      try {
+        const response = await data.json();
+        if (response !== override) {
+          override = response;
+          generateSchedule(defaultAllSchedules);
+        }
+      } catch (e) {
+        showAlert("Network error, schedule might not be up to date")
+      }
+    },
+    () => {
+      showAlert("Network error, schedule might not be up to date");
+    }
+  );
+}
+
+checkForChanges();
+setInterval(checkForChanges, 10000);
 
 /**
  * Generate list of time events (start/ends)
@@ -76,9 +134,7 @@ function generateSchedule(allSchedules) {
     $("#timer").text("No school today!");
     return;
   } else {
-    $("#periods").html(
-      "<tr><th>Period</th><th>Start</th><th>End</th></tr>"
-    );
+    $("#periods").html("<tr><th>Period</th><th>Start</th><th>End</th></tr>");
 
     //will have the time events pushed to it
     let times = [];
@@ -88,7 +144,7 @@ function generateSchedule(allSchedules) {
 
     //for each period
     for (let i = 0; i < currentSchedule.length; i++) {
-      currentP = currentSchedule[i];
+      let currentP = currentSchedule[i];
 
       //converts the 00:00 format to an actual date object, then turn it into a ms timestamp
       let start = timeStringToDate(currentP.start);
@@ -118,18 +174,24 @@ function generateSchedule(allSchedules) {
       //Add period to schedule in the DOM
       //Set user-define period title if it exists
       let pTitle;
-      if (currentP.name != "Break" && currentP.name != "Lunch" && !currentP.name.includes("walkout") /**Temporary for protest */ && getClassName(currentP.name)) {
+      if (
+        currentP.name != "Break" &&
+        currentP.name != "Lunch" &&
+        !currentP.name.includes("walkout") /**Temporary for protest */ &&
+        getClassName(currentP.name)
+      ) {
         pTitle = currentP.name + ": " + getClassName(currentP.name);
-      } else {//set it to default if there is no user-defined title
+      } else {
+        //set it to default if there is no user-defined title
         pTitle = currentP.name;
       }
 
       //Create table row
-      let tr = '<tr';
-      if(currentP.name.includes("walkout")) {
-        tr += ' class="walkout"'
-      } else if(currentP.name == "Break" || currentP.name == "Lunch") {
-        tr += ' class="break"'
+      let tr = "<tr";
+      if (currentP.name.includes("walkout")) {
+        tr += ' class="walkout"';
+      } else if (currentP.name == "Break" || currentP.name == "Lunch") {
+        tr += ' class="break"';
       } else {
         tr += " value=" + currentP.name;
       }
@@ -137,7 +199,7 @@ function generateSchedule(allSchedules) {
       <td>${pTitle}</td>
       <td>${startAPM}</td>
       <td>${currentP.name.includes("walkout") ? "~" : ""}${endAPM}</td>
-    </tr>`
+    </tr>`;
       document.getElementById("periods").innerHTML += tr;
     }
 
@@ -213,7 +275,6 @@ function findNext(timesList) {
 }
 
 //set the next event
-// let nextTime = findNext(times);
 let prevSec = 0;
 let prevNext = 0;
 
@@ -288,7 +349,7 @@ function msToTime(duration) {
   var milliseconds = Math.floor(duration % 1000),
     seconds = Math.floor((duration / 1000) % 60),
     minutes = Math.floor(duration / (1000 * 60));
-  
+
   //add 0 to beginning of numbers if it's only one digit
   minutes = minutes < 10 ? "0" + minutes : minutes;
   seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -307,7 +368,7 @@ function msToTime(duration) {
 }
 
 //show the naming menu to change names of periods
-$("#shownaming").click(() => {
+$("#shownaming").on("click", () => {
   $("#naming").stop();
   $("#naming").slideToggle();
 });
@@ -326,14 +387,29 @@ $(".pinput").on("input", function () {
 function setClassName(period, className) {
   //only changes if there is local storage enabled
   if (hasStorage) {
-
     //if there is an actual class name, set the name
     if (className && className != "") {
       localStorage.setItem(period, className);
       $(`tr[value=${period}] td:nth-child(1)`).text(period + ": " + className);
-    } else { //if not, remove it and reset the schedule
+    } else {
+      //if not, remove it and reset the schedule
       localStorage.removeItem(period);
       $(`tr[value=${period}] td:nth-child(1)`).text(period);
     }
   }
 }
+
+let alertHidden = false;
+function showAlert(text) {
+  if (!alertHidden) {
+    const $alert = $("#alert");
+    if(!$alert.is(':visible')) {
+      $alert.slideToggle();
+    }
+  }
+}
+
+$("#alert-close").on("click", () => {
+  $('#alert').slideToggle();
+  alertHidden = true;
+});
