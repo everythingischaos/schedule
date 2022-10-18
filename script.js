@@ -396,12 +396,12 @@ function setClassName(period, className) {
 
 let alertHidden = false;
 function showAlert(text) {
-  if (!alertHidden) {
-    const $alert = $("#alert");
-    if(!$alert.is(':visible')) {
-      $alert.slideToggle();
-    }
-  }
+  // if (!alertHidden) {
+  //   const $alert = $("#alert");
+  //   if(!$alert.is(':visible')) {
+  //     $alert.slideToggle();
+  //   }
+  // }
 }
 
 $("#alert-close").on("click", () => {
