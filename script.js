@@ -1,8 +1,6 @@
-import $ from "jquery";
-
 //check if browser supports storage
 let hasStorage = false;
-if (typeof Storage !== "undefined") {
+if (typeof Storage !== 'undefined') {
   hasStorage = true;
 } else {
   hasStorage = false;
@@ -10,15 +8,17 @@ if (typeof Storage !== "undefined") {
 
 //Register service worker
 const registerServiceWorker = async () => {
-  if ("serviceWorker" in navigator) {
+  if ('serviceWorker' in navigator) {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js");
+      const registration = await navigator.serviceWorker.register(
+        './service-worker.js'
+      );
       if (registration.installing) {
-        console.log("Service worker installing");
+        console.log('Service worker installing');
       } else if (registration.waiting) {
-        console.log("Service worker installed");
+        console.log('Service worker installed');
       } else if (registration.active) {
-        console.log("Service worker active");
+        console.log('Service worker active');
       }
     } catch (error) {
       console.error(`Registration failed with ${error}`);
@@ -29,9 +29,6 @@ const registerServiceWorker = async () => {
 // …
 
 registerServiceWorker();
-
-//prevents caching of requested files
-$.ajaxSetup({ cache: false });
 
 //the default schedule
 let defaultAllSchedules = JSON.parse(
@@ -58,45 +55,37 @@ let nextTime;
 function checkForChanges() {
   //get the schedule json in case it's been updated
   fetch(
-    "https://gist.githubusercontent.com/piguyisme/e652e0a5009f17efde347c390767d069/raw/schedule.json?=" +
+    'https://gist.githubusercontent.com/piguyisme/e652e0a5009f17efde347c390767d069/raw/schedule.json?=' +
       Math.floor(Math.random() * 1000),
-    { cache: "no-store" }
+    { cache: 'no-store' }
   ).then(
     async (data) => {
-      try {
-        const response = await data.json();
-        if (response != defaultAllSchedules) {
-          defaultAllSchedules = response;
-          generateSchedule(defaultAllSchedules);
-        }
-      } catch (e) {
-        showAlert("Network error, schedule might not be up to date");
+      const response = await data.json();
+      if (response != defaultAllSchedules) {
+        defaultAllSchedules = response;
+        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
-      showAlert("Network error, schedule might not be up to date");
+      showAlert('Network error, schedule might not be up to date');
     }
   );
 
   //get the override data for rallies and stuff
   fetch(
-    "https://gist.githubusercontent.com/piguyisme/db88af35c569b7b5a8aff60c679f527c/raw/overrides.json?=" +
+    'https://gist.githubusercontent.com/piguyisme/db88af35c569b7b5a8aff60c679f527c/raw/overrides.json?=' +
       Math.floor(Math.random() * 1000),
-    { cache: "no-store" }
+    { cache: 'no-store' }
   ).then(
     async (data) => {
-      try {
-        const response = await data.json();
-        if (response !== override) {
-          override = response;
-          generateSchedule(defaultAllSchedules);
-        }
-      } catch (e) {
-        showAlert("Network error, schedule might not be up to date")
+      const response = await data.json();
+      if (JSON.stringify(response) != JSON.stringify(override)) {
+        override = response;
+        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
-      showAlert("Network error, schedule might not be up to date");
+      showAlert('Network error, schedule might not be up to date');
     }
   );
 }
@@ -126,10 +115,10 @@ function generateSchedule(allSchedules) {
     currentSchedule = allSchedules[dayNum - 1];
   }
   if ((dayNum == 0 || dayNum == 6) && !override) {
-    $("#timer").text("No school today!");
+    document.querySelector('#timer').textContent = 'No school today!';
     return;
   } else {
-    $("#periods").html("<tr><th>Period</th><th>Start</th><th>End</th></tr>");
+    document.querySelector('#periods').innerHTML = '<tr><th>Period</th><th>Start</th><th>End</th></tr>';
 
     //will have the time events pushed to it
     let times = [];
@@ -148,21 +137,21 @@ function generateSchedule(allSchedules) {
       //push the start and end timestamps to times
       times.push({
         time: start.getTime(),
-        name: "Start of " + currentP.name,
+        name: 'Start of ' + currentP.name,
       });
       times.push({
         time: end.getTime(),
-        name: "End of " + currentP.name,
+        name: 'End of ' + currentP.name,
       });
 
-      let startAPM = start.toLocaleString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
+      let startAPM = start.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
         hour12: true,
       });
-      let endAPM = end.toLocaleString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
+      let endAPM = end.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
         hour12: true,
       });
 
@@ -170,37 +159,41 @@ function generateSchedule(allSchedules) {
       //Set user-define period title if it exists
       let pTitle;
       if (
-        currentP.name != "Break" &&
-        currentP.name != "Lunch" &&
-        !currentP.name.includes("walkout") /**Temporary for protest */ &&
+        currentP.name != 'Break' &&
+        currentP.name != 'Lunch' &&
+        !currentP.name.includes('walkout') /**Temporary for protest */ &&
         getClassName(currentP.name)
       ) {
-        pTitle = currentP.name + ": " + getClassName(currentP.name);
+        pTitle = currentP.name + ': ' + getClassName(currentP.name);
       } else {
         //set it to default if there is no user-defined title
         pTitle = currentP.name;
       }
 
       //Create table row
-      let tr = "<tr";
-      if (currentP.name.includes("walkout")) {
+      let tr = '<tr';
+      if (currentP.name.includes('walkout')) {
         tr += ' class="walkout"';
-      } else if (currentP.name == "Break" || currentP.name == "Lunch") {
+      } else if (currentP.name == 'Break' || currentP.name == 'Lunch') {
         tr += ' class="break"';
       } else {
-        tr += " value=" + currentP.name;
+        tr += ' value=' + currentP.name;
       }
       tr += `>
       <td>${pTitle}</td>
       <td>${startAPM}</td>
-      <td>${currentP.name.includes("walkout") ? "~" : ""}${endAPM}</td>
+      <td>${currentP.name.includes('walkout') ? '~' : ''}${endAPM}</td>
     </tr>`;
-      document.getElementById("periods").innerHTML += tr;
+      document.getElementById('periods').innerHTML += tr;
     }
 
-    $(".pinput").each(function (i) {
-      $(this).val(getClassName(String(i + 1)));
-    });
+    // $('.pinput').each(function (i) {
+    //   $(this).val(getClassName(String(i + 1)));
+    // });
+    document.querySelectorAll('.pinput').forEach((el, i) => {
+      const name = getClassName(String(i + 1));
+      el.value = name ? name : '';
+    })
 
     //Render timer every 1 ms
     latestIntervalID = setInterval(renderTimer, 1, times, dayNum);
@@ -225,9 +218,7 @@ function getClassName(period) {
 }
 
 //Create original schedule
-$(document).ready(() => {
-  generateSchedule(defaultAllSchedules);
-});
+generateSchedule(defaultAllSchedules);
 
 /**
  * Converts 00:00 to date object (dependent on date)
@@ -239,7 +230,7 @@ function timeStringToDate(timeString) {
   let output = newDebugDate();
 
   //create array of x:y [x, y]
-  let numbers = timeString.split(":");
+  let numbers = timeString.split(':');
 
   //set the time of the date object to the numbers with curent date and 0 ms
   output.setHours(numbers[0], numbers[1], 0);
@@ -290,7 +281,7 @@ function renderTimer(times, dayNum) {
   let curDate = newDebugDate();
 
   //define timer element
-  let timerDOM = document.getElementById("timer");
+  let timerDOM = document.getElementById('timer');
 
   //if there is an event coming up
   if (nextTime) {
@@ -299,18 +290,18 @@ function renderTimer(times, dayNum) {
 
     //Set text to set the timer to, parsed with the msToTime thing
     let text = msToTime(difference);
-    if (document.visibilityState == "visible") {
+    if (document.visibilityState == 'visible') {
       //Set timer object to the data returned
 
       timerDOM.innerHTML =
-        text.minutes + ":" + text.seconds + "." + text.milliseconds;
+        text.minutes + ':' + text.seconds + '.' + text.milliseconds;
       if (prevNext != nextTime) {
-        $("#next").text(
-          "Until " +
+        document.querySelector('#next').textContent = (
+          'Until ' +
             nextTime.name +
             (getClassName(nextTime.name.slice(-1))
-              ? ": " + getClassName(nextTime.name.slice(-1))
-              : "")
+              ? ': ' + getClassName(nextTime.name.slice(-1))
+              : '')
         );
         prevNext = nextTime;
       }
@@ -319,7 +310,7 @@ function renderTimer(times, dayNum) {
     if (prevSec != text.seconds) {
       //set the title to the time
       // if (document.visibilityState == "visible") {
-      document.title = text.minutes + ":" + text.seconds;
+      document.title = text.minutes + ':' + text.seconds;
       // } else {
       //   document.title = text.minutes + ":" + String(parseInt(text.seconds)-1);
       // }
@@ -329,8 +320,8 @@ function renderTimer(times, dayNum) {
     }
   } else {
     //if there is no event coming up, display text
-    timerDOM.innerText = "School's Out!";
-    document.title = "School's Out!";
+    timerDOM.innerText = 'School\'s Out!';
+    document.title = 'School\'s Out!';
   }
 }
 
@@ -346,13 +337,13 @@ function msToTime(duration) {
     minutes = Math.floor(duration / (1000 * 60));
 
   //add 0 to beginning of numbers if it's only one digit
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  seconds = seconds < 10 ? "0" + seconds : seconds;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
   milliseconds =
     milliseconds < 100
       ? milliseconds < 10
-        ? "00" + milliseconds
-        : "0" + milliseconds
+        ? '00' + milliseconds
+        : '0' + milliseconds
       : milliseconds;
 
   return {
@@ -363,16 +354,24 @@ function msToTime(duration) {
 }
 
 //show the naming menu to change names of periods
-$("#shownaming").on("click", () => {
-  $("#naming").stop();
-  $("#naming").slideToggle();
+document.querySelector('#shownaming').addEventListener('click', () => {
+  const naming = document.querySelector('#naming');
+  if(naming.classList.contains('hidden')) {
+    document.querySelector('#naming').classList.add('shown');
+    document.querySelector('#naming').classList.remove('hidden');
+  } else if(naming.classList.contains('shown')) {
+    document.querySelector('#naming').classList.add('hidden');
+    document.querySelector('#naming').classList.remove('shown');
+  }
 });
 
 //change period name on input
-$(".pinput").on("input", function () {
-  let $input = $(this);
-  setClassName($input.attr("id")[1], $input.val());
-});
+document.querySelectorAll('.pinput').forEach(el => {
+  el.addEventListener('input', (e) => {
+    let input = e.target;
+    setClassName(input.attributes.id.value[1], input.value);
+  });
+})
 
 /**
  * Change a class name
@@ -382,29 +381,35 @@ $(".pinput").on("input", function () {
 function setClassName(period, className) {
   //only changes if there is local storage enabled
   if (hasStorage) {
+    const el = document.querySelector(`tr[value="${period}"] td:nth-child(1)`)
     //if there is an actual class name, set the name
-    if (className && className != "") {
+    if (className && className != '') {
       localStorage.setItem(period, className);
-      $(`tr[value=${period}] td:nth-child(1)`).text(period + ": " + className);
+      if(el) {
+        el.textContent = period + ': ' + className;
+      }
     } else {
       //if not, remove it and reset the schedule
       localStorage.removeItem(period);
-      $(`tr[value=${period}] td:nth-child(1)`).text(period);
+      if(el) {
+        el.textContent = period;
+      }
     }
   }
 }
 
 let alertHidden = false;
 function showAlert(text) {
-  // if (!alertHidden) {
-  //   const $alert = $("#alert");
-  //   if(!$alert.is(':visible')) {
-  //     $alert.slideToggle();
-  //   }
-  // }
+  if (!alertHidden) {
+    const alert = document.querySelector('.alert')
+    document.querySelector('#alert-text').textContent = text;
+    if(!alert.classList.contains('alert-visible')) {
+      alert.classList.add('alert-visible');
+    }
+  }
 }
 
-$("#alert-close").on("click", () => {
-  $('#alert').slideToggle();
+document.querySelector('#alert-close').addEventListener('click', () => {
+  document.querySelector('.alert').classList.remove('alert-visible')
   alertHidden = true;
-});
+})
