@@ -134,3 +134,7 @@ button {
   visibility: hidden;
   transition: opacity 0.5s visibility 0s 0.5s;
 }
+#footer {
+  position: absolute;
+  bottom: 0px;;
+}

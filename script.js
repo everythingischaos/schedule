@@ -67,7 +67,7 @@ function checkForChanges() {
       }
     },
     () => {
-      showAlert('Network error, schedule might not be up to date');
+      // showAlert('Network error, schedule might not be up to date');
     }
   );
 
@@ -85,7 +85,7 @@ function checkForChanges() {
       }
     },
     () => {
-      showAlert('Network error, schedule might not be up to date');
+      // showAlert('Network error, schedule might not be up to date');
     }
   );
 }
@@ -398,18 +398,18 @@ function setClassName(period, className) {
   }
 }
 
-let alertHidden = false;
-function showAlert(text) {
-  if (!alertHidden) {
-    const alert = document.querySelector('.alert')
-    document.querySelector('#alert-text').textContent = text;
-    if(!alert.classList.contains('alert-visible')) {
-      alert.classList.add('alert-visible');
-    }
-  }
-}
+// let alertHidden = false;
+// function showAlert(text) {
+//   if (!alertHidden) {
+//     const alert = document.querySelector('.alert')
+//     document.querySelector('#alert-text').textContent = text;
+//     if(!alert.classList.contains('alert-visible')) {
+//       alert.classList.add('alert-visible');
+//     }
+//   }
+// }
 
-document.querySelector('#alert-close').addEventListener('click', () => {
-  document.querySelector('.alert').classList.remove('alert-visible')
-  alertHidden = true;
-})
+// document.querySelector('#alert-close').addEventListener('click', () => {
+//   document.querySelector('.alert').classList.remove('alert-visible')
+//   alertHidden = true;
+// })
