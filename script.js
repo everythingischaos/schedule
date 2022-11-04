@@ -6,30 +6,6 @@ if (typeof Storage !== 'undefined') {
   hasStorage = false;
 }
 
-//Register service worker
-// const registerServiceWorker = async () => {
-//   if ('serviceWorker' in navigator) {
-//     try {
-//       const registration = await navigator.serviceWorker.register(
-//         './service-worker.js'
-//       );
-//       if (registration.installing) {
-//         console.log('Service worker installing');
-//       } else if (registration.waiting) {
-//         console.log('Service worker installed');
-//       } else if (registration.active) {
-//         console.log('Service worker active');
-//       }
-//     } catch (error) {
-//       console.error(`Registration failed with ${error}`);
-//     }
-//   }
-// };
-
-// …
-
-// registerServiceWorker();
-
 //the default schedule
 let defaultAllSchedules = JSON.parse(
   '[[{"name":"1","start":"8:30","end":"9:15"},{"name":"2","start":"9:20","end":"10:10"},{"name":"3","start":"10:15","end":"11:05"},{"name":"Break","start":"11:05","end":"11:20"},{"name":"4","start":"11:25","end":"12:15"},{"name":"5","start":"12:20","end":"13:10"},{"name":"Lunch","start":"13:10","end":"13:40"},{"name":"6","start":"13:45","end":"14:35"},{"name":"7","start":"14:40","end":"15:30"}],[{"name":"1","start":"8:30","end":"9:36"},{"name":"3","start":"9:41","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"5","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"7","start":"13:53","end":"15:30"}],[{"name":"2","start":"8:30","end":"10:07"},{"name":"Tutorial","start":"10:12","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"4","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"6","start":"13:53","end":"15:30"}],[{"name":"1","start":"8:30","end":"9:36"},{"name":"3","start":"9:41","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"5","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"7","start":"13:53","end":"15:30"}],[{"name":"1","start":"8:30","end":"9:36"},{"name":"2","start":"9:41","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"4","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"6","start":"13:53","end":"15:30"}]]'
@@ -61,7 +37,7 @@ function checkForChanges() {
   ).then(
     async (data) => {
       const response = await data.json();
-      if (response != defaultAllSchedules) {
+      if (JSON.stringify(response) != JSON.stringify(defaultAllSchedules)) {
         defaultAllSchedules = response;
         generateSchedule(defaultAllSchedules);
       }
