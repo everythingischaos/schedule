@@ -31,7 +31,7 @@ let nextTime;
 function checkForChanges() {
   //get the schedule json in case it's been updated
   fetch(
-    'https://gist.githubusercontent.com/piguyisme/e652e0a5009f17efde347c390767d069/raw/schedule.json?=' +
+    'https://everythingischaos.com/schedule-data/schedule.json?=' +
       Math.floor(Math.random() * 1000),
     { cache: 'no-store' }
   ).then(
@@ -49,7 +49,7 @@ function checkForChanges() {
 
   //get the override data for rallies and stuff
   fetch(
-    'https://gist.githubusercontent.com/piguyisme/db88af35c569b7b5a8aff60c679f527c/raw/overrides.json?=' +
+    'https://everythingischaos.com/schedule-data/overrides.json?=' +
       Math.floor(Math.random() * 1000),
     { cache: 'no-store' }
   ).then(
