@@ -75,7 +75,7 @@ setInterval(checkForChanges, 10000);
  */
 function generateSchedule(allSchedules) {
   let dayNum = newDebugDate().getDay();
-  let currentSchedule;
+  let currentSchedule = allSchedules[dayNum - 1];
   if (override) {
     const curDate = newDebugDate();
     const dateString = `${curDate.getDate()}-${
@@ -84,11 +84,7 @@ function generateSchedule(allSchedules) {
 
     if (override[dateString]) {
       currentSchedule = override[dateString];
-    } else {
-      currentSchedule = allSchedules[dayNum - 1];
     }
-  } else {
-    currentSchedule = allSchedules[dayNum - 1];
   }
   if ((dayNum == 0 || dayNum == 6) && !override) {
     document.querySelector('#timer').textContent = 'No school today!';
