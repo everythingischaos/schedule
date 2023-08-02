@@ -90,7 +90,6 @@ function checkForChanges() {
 }
 
 checkForChanges();
-console.log("changes were checked");
 setInterval(checkForChanges, 10000);
 
 /**
@@ -101,7 +100,6 @@ function generateSchedule(allSchedules) {
   let dayNum = newDebugDate().getDay();
   let currentSchedule = allSchedules[days[dayNum - 1]];
   if (override) {
-    console.log("there's an override yay!");
     const curDate = newDebugDate();
     const dateString = `${curDate.getDate()}-${
       curDate.getMonth() + 1
@@ -114,10 +112,8 @@ function generateSchedule(allSchedules) {
   }
   if (dayNum == 0 || dayNum == 6 || currentSchedule == "none") {
     document.querySelector('#timer').textContent = 'No school today!';
-    console.log('no school and whatnot');
     return;
   } else {
-    console.log("school?????");
     document.querySelector('#periods').innerHTML = '<tr><th>Period</th><th>Start</th><th>End</th></tr>';
 
     //will have the time events pushed to it
