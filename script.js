@@ -105,10 +105,15 @@ function generateSchedule(allSchedules) {
     }-${curDate.getFullYear()}`;
 
     if (override[dateString]) {
-      currentSchedule = allSchedules[override[dateString]];
+      if (override[dateString] == "NS") {
+        dayNum = 0
+        override = null
+      } else {
+        currentSchedule = allSchedules[override[dateString]];
+      }
     }
   }
-  if ((dayNum == 0 || dayNum == 6 || override[dateString] == "NS") && !override) {
+  if ((dayNum == 0 || dayNum == 6) && !override) {
     document.querySelector('#timer').textContent = 'No school today!';
     return;
   } else {
