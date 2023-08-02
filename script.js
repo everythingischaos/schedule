@@ -43,7 +43,6 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(defaultAllSchedules)) {
         defaultAllSchedules = response;
-        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
@@ -61,7 +60,6 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(days)) {
         days = response;
-        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
@@ -79,13 +77,13 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(override)) {
         override = response;
-        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
       // showAlert('Network error, schedule might not be up to date');
     }
   );
+  generateSchedule(defaultAllSchedules);
 }
 
 checkForChanges();
