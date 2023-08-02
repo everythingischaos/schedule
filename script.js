@@ -97,6 +97,7 @@ function generateSchedule(allSchedules) {
   let dayNum = newDebugDate().getDay();
   let currentSchedule = allSchedules[days[dayNum - 1]];
   if (override) {
+    console.log("there's an override yay!");
     const curDate = newDebugDate();
     const dateString = `${curDate.getDate()}-${
       curDate.getMonth() + 1
