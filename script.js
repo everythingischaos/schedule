@@ -83,10 +83,12 @@ function checkForChanges() {
       // showAlert('Network error, schedule might not be up to date');
     }
   );
+  console.log("changing code bouta make the schedule");
   generateSchedule(defaultAllSchedules);
 }
 
 checkForChanges();
+console.log("changes were checked");
 setInterval(checkForChanges, 10000);
 
 /**
