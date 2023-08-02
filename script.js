@@ -104,6 +104,7 @@ function generateSchedule(allSchedules) {
 
     if (override[dateString]) {
       currentSchedule = allSchedules[override[dateString]];
+      console.log(currentSchedule);
     }
   }
   if (dayNum == 0 || dayNum == 6 || currentSchedule == "none") {
