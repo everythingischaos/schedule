@@ -108,7 +108,7 @@ function generateSchedule(allSchedules) {
       currentSchedule = allSchedules[override[dateString]];
     }
   }
-  if ((dayNum == 0 || dayNum == 6 || currentSchedule == "none") && !override) {
+  if (dayNum == 0 || dayNum == 6 || currentSchedule == "none") {
     document.querySelector('#timer').textContent = 'No school today!';
     return;
   } else {
