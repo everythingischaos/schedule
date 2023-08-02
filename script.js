@@ -8,8 +8,12 @@ if (typeof Storage !== 'undefined') {
 
 //the default schedule
 let defaultAllSchedules = JSON.parse(
-  '[[{"name":"1","start":"8:30","end":"9:15"},{"name":"2","start":"9:20","end":"10:10"},{"name":"3","start":"10:15","end":"11:05"},{"name":"Break","start":"11:05","end":"11:20"},{"name":"4","start":"11:25","end":"12:15"},{"name":"5","start":"12:20","end":"13:10"},{"name":"Lunch","start":"13:10","end":"13:40"},{"name":"6","start":"13:45","end":"14:35"},{"name":"7","start":"14:40","end":"15:30"}],[{"name":"1","start":"8:30","end":"9:36"},{"name":"3","start":"9:41","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"5","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"7","start":"13:53","end":"15:30"}],[{"name":"2","start":"8:30","end":"10:07"},{"name":"Tutorial","start":"10:12","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"4","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"6","start":"13:53","end":"15:30"}],[{"name":"1","start":"8:30","end":"9:36"},{"name":"3","start":"9:41","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"5","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"7","start":"13:53","end":"15:30"}],[{"name":"1","start":"8:30","end":"9:36"},{"name":"2","start":"9:41","end":"11:18"},{"name":"Break","start":"11:18","end":"11:33"},{"name":"4","start":"11:38","end":"13:15"},{"name":"Lunch","start":"13:15","end":"13:48"},{"name":"6","start":"13:53","end":"15:30"}]]'
+  '{"A":[{name:"1",start:"8:30",end:"9:20"},{name:"2",start:"9:25",end:"10:20"},{name:"3",start:"10:25",end:"11:15"},{name:"Break",start:"11:15",end:"11:30"},{name:"4",start:"11:35",end:"12:25"},{name:"5",start:"12:30",end:"13:20"},{name:"Lunch",start:"13:20",end:"13:50"},{name:"6",start:"13:55",end:"14:45"},{name:"7",start:"14:50",end:"15:40"}],"E":[{name:"1",start:"8:30",end:"9:20"},{name:"2",start:"9:25",end:"10:55"},{name:"Break",start:"10:55",end:"11:10"},{name:"Tutorial",start:"11:15",end:"12:00"},{name:"4",start:"12:05",end:"13:35"},{name:"Lunch",start:"13:35",end:"14:05"},{name:"6",start:"14:10",end:"15:40"}],"O":[{name:"1",start:"8:30",end:"9:20"},{name:"3",start:"9:25",end:"10:55"},{name:"Break",start:"10:55",end:"11:10"},{name:"5",start:"11:15",end:"12:45"},{name:"Lunch",start:"12:45",end:"13:15"},{name:"7",start:"13:20",end:"14:50"}],"SA":[{name:"1",start:"8:30",end:"9:25"},{name:"3",start:"9:30",end:"10:45"},{name:"Rally",start:"10:50",end:"11:25"},{name:"Break",start:"11:25",end:"11:40"},{name:"5",start:"11:45",end:"13:00"},{name:"Lunch",start:"13:00",end:"13:30"},{name:"7",start:"13:35",end:"14:50"}],"LA":[{name:"1",start:"8:30",end:"9:15"},{name:"3",start:"9:20",end:"10:30"},{name:"Assembly",start:"10:35",end:"11:35"},{name:"Break",start:"11:35",end:"11:50"},{name:"5",start:"11:55",end:"13:05"},{name:"Lunch",start:"13:05",end:"13:35"},{name:"7",start:"13:40",end:"14:50"}]}'
 );
+
+let days = JSON.parse(
+  '["A","E","O","E","O"]'
+)
 
 let latestIntervalID;
 
@@ -31,7 +35,7 @@ let nextTime;
 function checkForChanges() {
   //get the schedule json in case it's been updated
   fetch(
-    'https://everythingischaos.com/schedule-data/schedule.json?=' +
+    'https://everythingischaos.com/schedule-data/schedules.json?=' +
       Math.floor(Math.random() * 1000),
     { cache: 'no-store' }
   ).then(
@@ -39,6 +43,24 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(defaultAllSchedules)) {
         defaultAllSchedules = response;
+        generateSchedule(defaultAllSchedules);
+      }
+    },
+    () => {
+      // showAlert('Network error, schedule might not be up to date');
+    }
+  );
+
+  //do the days of the week i guess
+  fetch(
+    'https://everythingischaos.com/schedule-data/days.json?=' +
+      Math.floor(Math.random() * 1000),
+    { cache: 'no-store' }
+  ).then(
+    async (data) => {
+      const response = await data.json();
+      if (JSON.stringify(response) != JSON.stringify(days)) {
+        days = response;
         generateSchedule(defaultAllSchedules);
       }
     },
@@ -75,7 +97,7 @@ setInterval(checkForChanges, 10000);
  */
 function generateSchedule(allSchedules) {
   let dayNum = newDebugDate().getDay();
-  let currentSchedule = allSchedules[dayNum - 1];
+  let currentSchedule = allSchedules[days[dayNum - 1]];
   if (override) {
     const curDate = newDebugDate();
     const dateString = `${curDate.getDate()}-${
@@ -83,10 +105,10 @@ function generateSchedule(allSchedules) {
     }-${curDate.getFullYear()}`;
 
     if (override[dateString]) {
-      currentSchedule = override[dateString];
+      currentSchedule = allSchedules[override[dateString]];
     }
   }
-  if ((dayNum == 0 || dayNum == 6) && !override) {
+  if ((dayNum == 0 || dayNum == 6 || override[dateString] == "NS") && !override) {
     document.querySelector('#timer').textContent = 'No school today!';
     return;
   } else {
