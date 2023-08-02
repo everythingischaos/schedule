@@ -33,6 +33,25 @@ let override;
 let nextTime;
 
 function checkForChanges() {
+
+  //get the override data for rallies and stuff
+  fetch(
+    'https://everythingischaos.com/schedule-data/overrides.json?=' +
+      Math.floor(Math.random() * 1000),
+    { cache: 'no-store' }
+  ).then(
+    async (data) => {
+      const response = await data.json();
+      if (JSON.stringify(response) != JSON.stringify(override)) {
+        override = response;
+        generateSchedule(defaultAllSchedules);
+      }
+    },
+    () => {
+      // showAlert('Network error, schedule might not be up to date');
+    }
+  );
+
   //get the schedule json in case it's been updated
   fetch(
     'https://everythingischaos.com/schedule-data/schedules.json?=' +
@@ -43,6 +62,7 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(defaultAllSchedules)) {
         defaultAllSchedules = response;
+        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
@@ -60,24 +80,7 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(days)) {
         days = response;
-      }
-    },
-    () => {
-      // showAlert('Network error, schedule might not be up to date');
-    }
-  );
-
-  //get the override data for rallies and stuff
-  fetch(
-    'https://everythingischaos.com/schedule-data/overrides.json?=' +
-      Math.floor(Math.random() * 1000),
-    { cache: 'no-store' }
-  ).then(
-    async (data) => {
-      const response = await data.json();
-      if (JSON.stringify(response) != JSON.stringify(override)) {
-        override = response;
-        console.log("override received");
+        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
@@ -215,9 +218,6 @@ function getClassName(period) {
     return undefined;
   }
 }
-
-//Create original schedule
-generateSchedule(defaultAllSchedules);
 
 /**
  * Converts 00:00 to date object (dependent on date)
