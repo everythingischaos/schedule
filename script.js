@@ -77,6 +77,7 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(override)) {
         override = response;
+        console.log("override received");
       }
     },
     () => {
