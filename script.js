@@ -44,7 +44,7 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(override)) {
         override = response;
-        generateSchedule(defaultAllSchedules);
+        generateSchedule(defaultAllSchedules);  
       }
     },
     () => {
@@ -87,8 +87,6 @@ function checkForChanges() {
       // showAlert('Network error, schedule might not be up to date');
     }
   );
-  console.log("changing code bouta make the schedule");
-  generateSchedule(defaultAllSchedules);
 }
 
 checkForChanges();
