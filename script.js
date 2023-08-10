@@ -356,6 +356,15 @@ document.querySelector('#shownaming').addEventListener('click', () => {
     document.querySelector('#naming').classList.add('hidden');
     document.querySelector('#naming').classList.remove('shown');
   }
+  // hide footer
+  const footer = document.querySelector('#footer');
+  if(footer.classList.contains('hidden')) {
+    document.querySelector('#footer').classList.add('shown');
+    document.querySelector('#footer').classList.remove('hidden');
+  } else if(footer.classList.contains('shown')) {
+    document.querySelector('#footer').classList.add('hidden');
+    document.querySelector('#footer').classList.remove('shown');
+  }
 });
 
 //change period name on input
