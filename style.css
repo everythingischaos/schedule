@@ -137,4 +137,5 @@ button {
 #footer {
   position: absolute;
   bottom: 0px;;
+  transition: all .5s;
 }
