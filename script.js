@@ -1,6 +1,6 @@
 //check if browser supports storage
 let hasStorage = false;
-if (typeof Storage !== 'undefined') {
+if (typeof Storage !== "undefined") {
   hasStorage = true;
 } else {
   hasStorage = false;
@@ -11,9 +11,7 @@ let defaultAllSchedules = JSON.parse(
   '{"A":[{"name":"1","start":"8:30","end":"9:20"},{"name":"2","start":"9:25","end":"10:20"},{"name":"3","start":"10:25","end":"11:15"},{"name":"Break","start":"11:15","end":"11:30"},{"name":"4","start":"11:35","end":"12:25"},{"name":"5","start":"12:30","end":"13:20"},{"name":"Lunch","start":"13:20","end":"13:50"},{"name":"6","start":"13:55","end":"14:45"},{"name":"7","start":"14:50","end":"15:40"}],"E":[{"name":"1","start":"8:30","end":"9:20"},{"name":"2","start":"9:25","end":"10:55"},{"name":"Break","start":"10:55","end":"11:10"},{"name":"Tutorial","start":"11:15","end":"12:00"},{"name":"4","start":"12:05","end":"13:35"},{"name":"Lunch","start":"13:35","end":"14:05"},{"name":"6","start":"14:10","end":"15:40"}],"O":[{"name":"1","start":"8:30","end":"9:20"},{"name":"3","start":"9:25","end":"10:55"},{"name":"Break","start":"10:55","end":"11:10"},{"name":"5","start":"11:15","end":"12:45"},{"name":"Lunch","start":"12:45","end":"13:15"},{"name":"7","start":"13:20","end":"14:50"}],"SA":[{"name":"1","start":"8:30","end":"9:25"},{"name":"3","start":"9:30","end":"10:45"},{"name":"Rally","start":"10:50","end":"11:25"},{"name":"Break","start":"11:25","end":"11:40"},{"name":"5","start":"11:45","end":"13:00"},{"name":"Lunch","start":"13:00","end":"13:30"},{"name":"7","start":"13:35","end":"14:50"}],"LA":[{"name":"1","start":"8:30","end":"9:15"},{"name":"3","start":"9:20","end":"10:30"},{"name":"Assembly","start":"10:35","end":"11:35"},{"name":"Break","start":"11:35","end":"11:50"},{"name":"5","start":"11:55","end":"13:05"},{"name":"Lunch","start":"13:05","end":"13:35"},{"name":"7","start":"13:40","end":"14:50"}],"NS":"none"}'
 );
 
-let days = JSON.parse(
-  '["A","E","O","E","O"]'
-)
+let days = JSON.parse('["A","E","O","E","O"]');
 
 let latestIntervalID;
 
@@ -33,30 +31,30 @@ let override;
 let nextTime;
 
 function checkForChanges() {
-
   //get the override data for rallies and stuff
   fetch(
-    'https://everythingischaos.com/schedule-data/overrides.json?=' +
+    "https://everythingischaos.com/schedule-data/overrides.json?=" +
       Math.floor(Math.random() * 1000),
-    { cache: 'no-store' }
+    { cache: "no-store" }
   ).then(
     async (data) => {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(override)) {
         override = response;
-        generateSchedule(defaultAllSchedules);  
+        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
-      // showAlert('Network error, schedule might not be up to date');
+      showAlert("Network error!  Schedule might not be up to date.");
+      clearInterval(changesIntervalID);
     }
   );
 
   //get the schedule json in case it's been updated
   fetch(
-    'https://everythingischaos.com/schedule-data/schedules.json?=' +
+    "https://everythingischaos.com/schedule-data/schedules.json?=" +
       Math.floor(Math.random() * 1000),
-    { cache: 'no-store' }
+    { cache: "no-store" }
   ).then(
     async (data) => {
       const response = await data.json();
@@ -66,15 +64,16 @@ function checkForChanges() {
       }
     },
     () => {
-      // showAlert('Network error, schedule might not be up to date');
+      showAlert("Network error!  Schedule might not be up to date.");
+      clearInterval(changesIntervalID);
     }
   );
 
   //do the days of the week i guess
   fetch(
-    'https://everythingischaos.com/schedule-data/days.json?=' +
+    "https://everythingischaos.com/schedule-data/days.json?=" +
       Math.floor(Math.random() * 1000),
-    { cache: 'no-store' }
+    { cache: "no-store" }
   ).then(
     async (data) => {
       const response = await data.json();
@@ -84,13 +83,14 @@ function checkForChanges() {
       }
     },
     () => {
-      // showAlert('Network error, schedule might not be up to date');
+      showAlert("Network error!  Schedule might not be up to date.");
+      clearInterval(changesIntervalID);
     }
   );
 }
 
 checkForChanges();
-setInterval(checkForChanges, 10000);
+let changesIntervalID = setInterval(checkForChanges, 10000);
 
 /**
  * Generate list of time events (start/ends)
@@ -111,10 +111,11 @@ function generateSchedule(allSchedules) {
     }
   }
   if (dayNum == 0 || dayNum == 6 || currentSchedule == "none") {
-    document.querySelector('#timer').textContent = 'No school today!';
+    document.querySelector("#timer").textContent = "No school today!";
     return;
   } else {
-    document.querySelector('#periods').innerHTML = '<tr><th>Period</th><th>Start</th><th>End</th></tr>';
+    document.querySelector("#periods").innerHTML =
+      "<tr><th>Period</th><th>Start</th><th>End</th></tr>";
 
     //will have the time events pushed to it
     let times = [];
@@ -133,21 +134,21 @@ function generateSchedule(allSchedules) {
       //push the start and end timestamps to times
       times.push({
         time: start.getTime(),
-        name: 'Start of ' + currentP.name,
+        name: "Start of " + currentP.name,
       });
       times.push({
         time: end.getTime(),
-        name: 'End of ' + currentP.name,
+        name: "End of " + currentP.name,
       });
 
-      let startAPM = start.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: 'numeric',
+      let startAPM = start.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
         hour12: true,
       });
-      let endAPM = end.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: 'numeric',
+      let endAPM = end.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
         hour12: true,
       });
 
@@ -155,41 +156,41 @@ function generateSchedule(allSchedules) {
       //Set user-define period title if it exists
       let pTitle;
       if (
-        currentP.name != 'Break' &&
-        currentP.name != 'Lunch' &&
-        !currentP.name.includes('walkout') /**Temporary for protest */ &&
+        currentP.name != "Break" &&
+        currentP.name != "Lunch" &&
+        !currentP.name.includes("walkout") /**Temporary for protest */ &&
         getClassName(currentP.name)
       ) {
-        pTitle = currentP.name + ': ' + getClassName(currentP.name);
+        pTitle = currentP.name + ": " + getClassName(currentP.name);
       } else {
         //set it to default if there is no user-defined title
         pTitle = currentP.name;
       }
 
       //Create table row
-      let tr = '<tr';
-      if (currentP.name.includes('walkout')) {
+      let tr = "<tr";
+      if (currentP.name.includes("walkout")) {
         tr += ' class="walkout"';
-      } else if (currentP.name == 'Break' || currentP.name == 'Lunch') {
+      } else if (currentP.name == "Break" || currentP.name == "Lunch") {
         tr += ' class="break"';
       } else {
-        tr += ' value=' + currentP.name;
+        tr += " value=" + currentP.name;
       }
       tr += `>
       <td>${pTitle}</td>
       <td>${startAPM}</td>
-      <td>${currentP.name.includes('walkout') ? '~' : ''}${endAPM}</td>
+      <td>${currentP.name.includes("walkout") ? "~" : ""}${endAPM}</td>
     </tr>`;
-      document.getElementById('periods').innerHTML += tr;
+      document.getElementById("periods").innerHTML += tr;
     }
 
     // $('.pinput').each(function (i) {
     //   $(this).val(getClassName(String(i + 1)));
     // });
-    document.querySelectorAll('.pinput').forEach((el, i) => {
+    document.querySelectorAll(".pinput").forEach((el, i) => {
       const name = getClassName(String(i + 1));
-      el.value = name ? name : '';
-    })
+      el.value = name ? name : "";
+    });
 
     //Render timer every 1 ms
     latestIntervalID = setInterval(renderTimer, 1, times, dayNum);
@@ -223,7 +224,7 @@ function timeStringToDate(timeString) {
   let output = newDebugDate();
 
   //create array of x:y [x, y]
-  let numbers = timeString.split(':');
+  let numbers = timeString.split(":");
 
   //set the time of the date object to the numbers with curent date and 0 ms
   output.setHours(numbers[0], numbers[1], 0);
@@ -274,7 +275,7 @@ function renderTimer(times, dayNum) {
   let curDate = newDebugDate();
 
   //define timer element
-  let timerDOM = document.getElementById('timer');
+  let timerDOM = document.getElementById("timer");
 
   //if there is an event coming up
   if (nextTime) {
@@ -283,19 +284,18 @@ function renderTimer(times, dayNum) {
 
     //Set text to set the timer to, parsed with the msToTime thing
     let text = msToTime(difference);
-    if (document.visibilityState == 'visible') {
+    if (document.visibilityState == "visible") {
       //Set timer object to the data returned
 
       timerDOM.innerHTML =
-        text.minutes + ':' + text.seconds + '.' + text.milliseconds;
+        text.minutes + ":" + text.seconds + "." + text.milliseconds;
       if (prevNext != nextTime) {
-        document.querySelector('#next').textContent = (
-          'Until ' +
-            nextTime.name +
-            (getClassName(nextTime.name.slice(-1))
-              ? ': ' + getClassName(nextTime.name.slice(-1))
-              : '')
-        );
+        document.querySelector("#next").textContent =
+          "Until " +
+          nextTime.name +
+          (getClassName(nextTime.name.slice(-1))
+            ? ": " + getClassName(nextTime.name.slice(-1))
+            : "");
         prevNext = nextTime;
       }
     }
@@ -303,7 +303,7 @@ function renderTimer(times, dayNum) {
     if (prevSec != text.seconds) {
       //set the title to the time
       // if (document.visibilityState == "visible") {
-      document.title = text.minutes + ':' + text.seconds;
+      document.title = text.minutes + ":" + text.seconds;
       // } else {
       //   document.title = text.minutes + ":" + String(parseInt(text.seconds)-1);
       // }
@@ -313,8 +313,8 @@ function renderTimer(times, dayNum) {
     }
   } else {
     //if there is no event coming up, display text
-    timerDOM.innerText = 'School\'s Out!';
-    document.title = 'School\'s Out!';
+    timerDOM.innerText = "School's Out!";
+    document.title = "School's Out!";
   }
 }
 
@@ -330,13 +330,13 @@ function msToTime(duration) {
     minutes = Math.floor(duration / (1000 * 60));
 
   //add 0 to beginning of numbers if it's only one digit
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
   milliseconds =
     milliseconds < 100
       ? milliseconds < 10
-        ? '00' + milliseconds
-        : '0' + milliseconds
+        ? "00" + milliseconds
+        : "0" + milliseconds
       : milliseconds;
 
   return {
@@ -347,33 +347,33 @@ function msToTime(duration) {
 }
 
 //show the naming menu to change names of periods
-document.querySelector('#shownaming').addEventListener('click', () => {
-  const naming = document.querySelector('#naming');
-  if(naming.classList.contains('hidden')) {
-    document.querySelector('#naming').classList.add('shown');
-    document.querySelector('#naming').classList.remove('hidden');
-  } else if(naming.classList.contains('shown')) {
-    document.querySelector('#naming').classList.add('hidden');
-    document.querySelector('#naming').classList.remove('shown');
+document.querySelector("#shownaming").addEventListener("click", () => {
+  const naming = document.querySelector("#naming");
+  if (naming.classList.contains("hidden")) {
+    document.querySelector("#naming").classList.add("shown");
+    document.querySelector("#naming").classList.remove("hidden");
+  } else if (naming.classList.contains("shown")) {
+    document.querySelector("#naming").classList.add("hidden");
+    document.querySelector("#naming").classList.remove("shown");
   }
   // hide footer
-  const footer = document.querySelector('#footer');
-  if(footer.classList.contains('hidden')) {
-    document.querySelector('#footer').classList.add('shown');
-    document.querySelector('#footer').classList.remove('hidden');
-  } else if(footer.classList.contains('shown')) {
-    document.querySelector('#footer').classList.add('hidden');
-    document.querySelector('#footer').classList.remove('shown');
+  const footer = document.querySelector("#footer");
+  if (footer.classList.contains("hidden")) {
+    document.querySelector("#footer").classList.add("shown");
+    document.querySelector("#footer").classList.remove("hidden");
+  } else if (footer.classList.contains("shown")) {
+    document.querySelector("#footer").classList.add("hidden");
+    document.querySelector("#footer").classList.remove("shown");
   }
 });
 
 //change period name on input
-document.querySelectorAll('.pinput').forEach(el => {
-  el.addEventListener('input', (e) => {
+document.querySelectorAll(".pinput").forEach((el) => {
+  el.addEventListener("input", (e) => {
     let input = e.target;
     setClassName(input.attributes.id.value[1], input.value);
   });
-})
+});
 
 /**
  * Change a class name
@@ -383,35 +383,35 @@ document.querySelectorAll('.pinput').forEach(el => {
 function setClassName(period, className) {
   //only changes if there is local storage enabled
   if (hasStorage) {
-    const el = document.querySelector(`tr[value="${period}"] td:nth-child(1)`)
+    const el = document.querySelector(`tr[value="${period}"] td:nth-child(1)`);
     //if there is an actual class name, set the name
-    if (className && className != '') {
+    if (className && className != "") {
       localStorage.setItem(period, className);
-      if(el) {
-        el.textContent = period + ': ' + className;
+      if (el) {
+        el.textContent = period + ": " + className;
       }
     } else {
       //if not, remove it and reset the schedule
       localStorage.removeItem(period);
-      if(el) {
+      if (el) {
         el.textContent = period;
       }
     }
   }
 }
 
-// let alertHidden = false;
-// function showAlert(text) {
-//   if (!alertHidden) {
-//     const alert = document.querySelector('.alert')
-//     document.querySelector('#alert-text').textContent = text;
-//     if(!alert.classList.contains('alert-visible')) {
-//       alert.classList.add('alert-visible');
-//     }
-//   }
-// }
+let alertHidden = false;
+function showAlert(text) {
+  if (!alertHidden) {
+    const alert = document.querySelector(".alert");
+    document.querySelector("#alert-text").textContent = text;
+    if (!alert.classList.contains("alert-visible")) {
+      alert.classList.add("alert-visible");
+    }
+  }
+}
 
-// document.querySelector('#alert-close').addEventListener('click', () => {
-//   document.querySelector('.alert').classList.remove('alert-visible')
-//   alertHidden = true;
-// })
+document.querySelector("#alert-close").addEventListener("click", () => {
+  document.querySelector(".alert").classList.remove("alert-visible");
+  alertHidden = true;
+});
