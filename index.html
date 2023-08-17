@@ -17,20 +17,21 @@
     <meta name="robots" content="index, follow" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="language" content="English" />
-    <meta name="theme-color" content="#1f4068">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#1f4068" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 
     <link href="icons/icon-48x48.png" rel="icon" />
     
     <!-- <link href="/manifest.webmanifest" rel="manifest" /> -->
-    <script type="module" crossorigin src="./assets/index.784832e3.js"></script>
-    <link rel="stylesheet" href="./assets/index.9de6d5ff.css">
+    <script type="module" crossorigin src="./assets/index.6085afc2.js"></script>
+    <link rel="stylesheet" href="./assets/index.78903425.css">
   <link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
   <body>
     <table>
       <tbody id="periods"></tbody>
     </table>
     <div id="timer">Loading...</div>
+    <input id="showms" type="checkbox" class="msinput" checked />Show ms
     <div id="next"></div>
 
     <button id="shownaming">Edit Schedule</button>
@@ -52,8 +53,19 @@
       <input id="p7" type="text" class="pinput" /><br />
     </div>
     <!-- Ryan Lansedowne is awesome -->
-    <footer id="footer" class="shown">Under new management! Please tell Mason F. if there are any issues... :)</footer>
-    <div class="alert"><span id="alert-text">No internet connection, schedule might be inaccurate</span><img id="alert-close" src="./assets/x-symbol.f6350803.svg" alt="Close" width="30px" height="30px"></div>
+    <footer id="footer" class="shown">
+      Under new management! Please tell Mason F if there are any issues... :)
+    </footer>
+    <div class="alert">
+      <span id="alert-text">Network error! Schedule may be inaccurate.</span
+      ><img
+        id="alert-close"
+        src="./assets/x-symbol.f6350803.svg"
+        alt="Close"
+        width="30px"
+        height="30px"
+      />
+    </div>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
@@ -64,9 +76,9 @@
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag('js', new Date());
+      gtag("js", new Date());
 
-      gtag('config', 'UA-156025814-1');
+      gtag("config", "UA-156025814-1");
     </script>
     
   </body>
