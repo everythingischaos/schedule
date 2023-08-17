@@ -257,7 +257,7 @@ function findNext(timesList) {
 //set the next event
 let prevSec = 0;
 let prevNext = 0;
-let msChecked = document.querySelector(".msinput").attributes.checked;
+let msChecked = document.querySelector(".msinput").checked;
 
 /**
  * Render the timer till next event
