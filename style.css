@@ -11,6 +11,10 @@ body {
 #showms {
   padding: 10px;
 }
+input.msinput {
+  width: 40px;
+  height: 40px;
+}
 th {
   border: solid;
   border-width: 2px;
