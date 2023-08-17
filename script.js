@@ -290,7 +290,7 @@ function renderTimer(times, dayNum) {
       if (msChecked)
         timerDOM.innerHTML =
           text.minutes + ":" + text.seconds + "." + text.milliseconds;
-      timerDOM.innerHTML = text.minutes + ":" + text.seconds;
+      else timerDOM.innerHTML = text.minutes + ":" + text.seconds;
       if (prevNext != nextTime) {
         document.querySelector("#next").textContent =
           "Until " +
