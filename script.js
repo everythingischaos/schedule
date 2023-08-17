@@ -287,7 +287,7 @@ function renderTimer(times, dayNum) {
     let text = msToTime(difference);
     if (document.visibilityState == "visible") {
       //Set timer object to the data returned
-      if (getMsChecked)
+      if (msChecked)
         timerDOM.innerHTML =
           text.minutes + ":" + text.seconds + "." + text.milliseconds;
       else timerDOM.innerHTML = text.minutes + ":" + text.seconds;
