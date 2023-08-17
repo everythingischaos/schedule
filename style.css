@@ -11,9 +11,9 @@ body {
 #showms {
   padding: 10px;
 }
-input.msinput {
-  width: 40px;
-  height: 40px;
+.msinput {
+  width: max(3vh, 16px);
+  height: max(3vh, 16px);
 }
 th {
   border: solid;
