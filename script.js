@@ -388,6 +388,7 @@ document.querySelectorAll(".msinput").forEach((el) => {
   el.addEventListener("change", (e) => {
     let input = e.target;
     msChecked = input.checked;
+    console.log(msChecked);
   });
 });
 
