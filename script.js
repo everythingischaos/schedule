@@ -41,7 +41,6 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(override)) {
         override = response;
-        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
@@ -60,7 +59,6 @@ function checkForChanges() {
       const response = await data.json();
       if (JSON.stringify(response) != JSON.stringify(defaultAllSchedules)) {
         defaultAllSchedules = response;
-        generateSchedule(defaultAllSchedules);
       }
     },
     () => {
@@ -286,9 +284,10 @@ function renderTimer(times, dayNum) {
     let text = msToTime(difference);
     if (document.visibilityState == "visible") {
       //Set timer object to the data returned
-
-      timerDOM.innerHTML =
-        text.minutes + ":" + text.seconds + "." + text.milliseconds;
+      if (msChecked)
+        timerDOM.innerHTML =
+          text.minutes + ":" + text.seconds + "." + text.milliseconds;
+      timerDOM.innerHTML = text.minutes + ":" + text.seconds;
       if (prevNext != nextTime) {
         document.querySelector("#next").textContent =
           "Until " +
