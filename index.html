@@ -17,8 +17,8 @@
     <meta name="robots" content="index, follow" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="language" content="English" />
-    <meta name="theme-color" content="#1f4068">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#1f4068" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 
     <link href="icons/icon-48x48.png" rel="icon" />
     <link href="style.css" rel="stylesheet" type="text/css" />
@@ -29,6 +29,7 @@
       <tbody id="periods"></tbody>
     </table>
     <div id="timer">Loading...</div>
+    <input id="showms" type="checkbox" class="msinput" checked />Show ms
     <div id="next"></div>
 
     <button id="shownaming">Edit Schedule</button>
@@ -50,8 +51,19 @@
       <input id="p7" type="text" class="pinput" /><br />
     </div>
     <!-- Ryan Lansedowne is awesome -->
-    <footer id="footer" class="shown">Under new management! Please tell Mason F. if there are any issues... :)</footer>
-    <div class="alert"><span id="alert-text">No internet connection, schedule might be inaccurate</span><img id="alert-close" src="x-symbol.svg" alt="Close" width="30px" height="30px"></div>
+    <footer id="footer" class="shown">
+      Under new management! Please tell Mason F if there are any issues... :)
+    </footer>
+    <div class="alert">
+      <span id="alert-text">Network error! Schedule may be inaccurate.</span
+      ><img
+        id="alert-close"
+        src="x-symbol.svg"
+        alt="Close"
+        width="30px"
+        height="30px"
+      />
+    </div>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
@@ -62,9 +74,9 @@
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag('js', new Date());
+      gtag("js", new Date());
 
-      gtag('config', 'UA-156025814-1');
+      gtag("config", "UA-156025814-1");
     </script>
     <script src="script.js" type="module"></script>
   </body>

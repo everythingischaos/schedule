@@ -90,7 +90,7 @@ button {
 }
 .alert {
   position: absolute;
-  bottom: 5px;
+  top: 5px;
   background-color: #eca400;
   color: black;
   border-radius: 5px;

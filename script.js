@@ -192,8 +192,8 @@ function generateSchedule(allSchedules) {
       el.value = name ? name : "";
     });
 
-    //Render timer every 1 ms
-    latestIntervalID = setInterval(renderTimer, 1, times, dayNum);
+    //Render timer at 30 fps lol
+    latestIntervalID = setInterval(renderTimer, 3.33, times, dayNum);
   }
 }
 
@@ -339,10 +339,16 @@ function msToTime(duration) {
         : "0" + milliseconds
       : milliseconds;
 
+  if (msChecked)
+    return {
+      minutes: minutes,
+      seconds: seconds,
+      milliseconds: milliseconds,
+    };
+
   return {
     minutes: minutes,
     seconds: seconds,
-    milliseconds: milliseconds,
   };
 }
 
@@ -372,6 +378,15 @@ document.querySelectorAll(".pinput").forEach((el) => {
   el.addEventListener("input", (e) => {
     let input = e.target;
     setClassName(input.attributes.id.value[1], input.value);
+  });
+});
+
+let msChecked = true;
+// update ms setting on input
+document.querySelectorAll(".msinput").forEach((el) => {
+  el.addEventListener("input", (e) => {
+    let input = e.target;
+    msChecked = input.attributes.checked;
   });
 });
 
