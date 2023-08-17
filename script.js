@@ -257,6 +257,7 @@ function findNext(timesList) {
 //set the next event
 let prevSec = 0;
 let prevNext = 0;
+let msChecked = true;
 
 /**
  * Render the timer till next event
@@ -382,7 +383,6 @@ document.querySelectorAll(".pinput").forEach((el) => {
   });
 });
 
-let msChecked = true;
 // update ms setting on input
 document.querySelectorAll(".msinput").forEach((el) => {
   el.addEventListener("change", (e) => {
