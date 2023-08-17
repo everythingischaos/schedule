@@ -384,9 +384,9 @@ document.querySelectorAll(".pinput").forEach((el) => {
 let msChecked = true;
 // update ms setting on input
 document.querySelectorAll(".msinput").forEach((el) => {
-  el.addEventListener("input", (e) => {
+  el.addEventListener("change", (e) => {
     let input = e.target;
-    msChecked = input.attributes.checked;
+    msChecked = input.checked;
   });
 });
 
