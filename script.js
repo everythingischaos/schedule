@@ -257,7 +257,7 @@ function findNext(timesList) {
 //set the next event
 let prevSec = 0;
 let prevNext = 0;
-let msChecked = true;
+let msChecked = document.querySelector(".msinput").checked;
 
 /**
  * Render the timer till next event
@@ -287,7 +287,7 @@ function renderTimer(times, dayNum) {
     let text = msToTime(difference);
     if (document.visibilityState == "visible") {
       //Set timer object to the data returned
-      if (msChecked)
+      if (getMsChecked)
         timerDOM.innerHTML =
           text.minutes + ":" + text.seconds + "." + text.milliseconds;
       else timerDOM.innerHTML = text.minutes + ":" + text.seconds;
