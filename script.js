@@ -96,11 +96,11 @@ let changesIntervalID = setInterval(checkForChanges, 10000);
  * Generate list of time events (start/ends)
  * @param {Object[]} allSchedules - Array of all schedules in the week
  */
-function generateSchedule(allSchedules, caasppCheked) {
+function generateSchedule(allSchedules, caasppChecked) {
   let dayNum = newDebugDate().getDay();
   let currentSchedule = allSchedules[days[dayNum - 1]];
   let caasppLoaded = false;
-  if (caasppCheked) {
+  if (caasppChecked) {
     const curDate = newDebugDate();
     const scheduleId = `CAASPP_${curDate.getDate()}-${curDate.getMonth() + 1}`;
 
@@ -403,9 +403,9 @@ document.querySelectorAll(".pinput").forEach((el) => {
 document.querySelectorAll(".caasppinput").forEach((el) => {
   el.addEventListener("change", (e) => {
     let input = e.target;
-    caasppCheked = input.checked;
+    caasppChecked = input.checked;
     if (hasStorage) {
-      localStorage.setItem("caasppChecked", input.caasppCheked);
+      localStorage.setItem("caasppChecked", input.caasppChecked);
     }
   });
 });
