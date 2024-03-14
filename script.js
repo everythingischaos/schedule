@@ -96,14 +96,22 @@ let changesIntervalID = setInterval(checkForChanges, 10000);
  * Generate list of time events (start/ends)
  * @param {Object[]} allSchedules - Array of all schedules in the week
  */
-function generateSchedule(allSchedules) {
+function generateSchedule(allSchedules, caasppCheked) {
   let dayNum = newDebugDate().getDay();
   let currentSchedule = allSchedules[days[dayNum - 1]];
-  if (override) {
+  let caasppLoaded = false;
+  if (caasppCheked) {
     const curDate = newDebugDate();
-    const dateString = `${curDate.getDate()}-${
-      curDate.getMonth() + 1
-    }-${curDate.getFullYear()}`;
+    const scheduleId = `CAASPP_${curDate.getDate()}-${curDate.getMonth() + 1}`;
+
+    if (allSchedules.contains(scheduleId)) {
+      currentSchedule = allSchedules[scheduleId];
+      caasppLoaded = true;
+    }
+  }
+  if (override && !caasppLoaded) {
+    const curDate = newDebugDate();
+    const dateString = `${curDate.getDate()}-${curDate.getMonth() + 1}-${curDate.getFullYear()}`;
 
     if (override[dateString]) {
       currentSchedule = allSchedules[override[dateString]];
@@ -257,7 +265,7 @@ function findNext(timesList) {
 //set the next event
 let prevSec = 0;
 let prevNext = 0;
-let msChecked = document.querySelector(".msinput").checked;
+let caasppCheked = document.querySelector(".caasppinput").checked;
 
 /**
  * Render the timer till next event
@@ -287,10 +295,12 @@ function renderTimer(times, dayNum) {
     let text = msToTime(difference);
     if (document.visibilityState == "visible") {
       //Set timer object to the data returned
+      /*
       if (msChecked)
         timerDOM.innerHTML =
           text.minutes + ":" + text.seconds + "." + text.milliseconds;
-      else timerDOM.innerHTML = text.minutes + ":" + text.seconds;
+      else */
+      timerDOM.innerHTML = text.minutes + ":" + text.seconds;
       if (prevNext != nextTime) {
         document.querySelector("#next").textContent =
           "Until " +
@@ -383,12 +393,11 @@ document.querySelectorAll(".pinput").forEach((el) => {
   });
 });
 
-// update ms setting on input
-document.querySelectorAll(".msinput").forEach((el) => {
+// update caaspp setting on input
+document.querySelectorAll(".caasppinput").forEach((el) => {
   el.addEventListener("change", (e) => {
     let input = e.target;
-    msChecked = input.checked;
-    console.log(msChecked);
+    caasppCheked = input.checked;
   });
 });
 
