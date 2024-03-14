@@ -405,7 +405,7 @@ document.querySelectorAll(".caasppinput").forEach((el) => {
     let input = e.target;
     caasppChecked = input.checked;
     if (hasStorage) {
-      localStorage.setItem("caasppChecked", input.caasppChecked);
+      localStorage.setItem("caasppChecked", `${input.caasppChecked}`);
     }
   });
 });
