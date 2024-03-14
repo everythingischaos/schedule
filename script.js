@@ -265,7 +265,11 @@ function findNext(timesList) {
 //set the next event
 let prevSec = 0;
 let prevNext = 0;
-let caasppCheked = document.querySelector(".caasppinput").checked;
+let caasppChecked = false;
+if (hasStorage) caasppChecked = eval(localStorage.getItem("caasppChecked"));
+if (caasppChecked == null) {
+  caasppChecked = document.querySelector(".caasppinput").checked;
+} else document.querySelector(".caasppinput").checked = caasppChecked;
 
 /**
  * Render the timer till next event
@@ -400,6 +404,9 @@ document.querySelectorAll(".caasppinput").forEach((el) => {
   el.addEventListener("change", (e) => {
     let input = e.target;
     caasppCheked = input.checked;
+    if (hasStorage) {
+      localStorage.setItem("caasppChecked", input.caasppCheked);
+    }
   });
 });
 
