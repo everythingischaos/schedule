@@ -351,12 +351,14 @@ function msToTime(duration) {
         : "0" + milliseconds
       : milliseconds;
 
+  /*
   if (msChecked)
     return {
       minutes: minutes,
       seconds: seconds,
       milliseconds: milliseconds,
     };
+  */
 
   return {
     minutes: minutes,
