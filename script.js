@@ -29,6 +29,11 @@ function newDebugDate() {
 
 let override;
 let nextTime;
+let caasppChecked = false;
+if (hasStorage) caasppChecked = eval(localStorage.getItem("caasppChecked"));
+if (caasppChecked == null) {
+  caasppChecked = document.querySelector(".caasppinput").checked;
+} else document.querySelector(".caasppinput").checked = caasppChecked;
 
 function checkForChanges() {
   //get the override data for rallies and stuff
@@ -96,7 +101,7 @@ let changesIntervalID = setInterval(checkForChanges, 10000);
  * Generate list of time events (start/ends)
  * @param {Object[]} allSchedules - Array of all schedules in the week
  */
-function generateSchedule(allSchedules, caasppChecked) {
+function generateSchedule(allSchedules) {
   let dayNum = newDebugDate().getDay();
   let currentSchedule = allSchedules[days[dayNum - 1]];
   let caasppLoaded = false;
@@ -265,11 +270,6 @@ function findNext(timesList) {
 //set the next event
 let prevSec = 0;
 let prevNext = 0;
-let caasppChecked = false;
-if (hasStorage) caasppChecked = eval(localStorage.getItem("caasppChecked"));
-if (caasppChecked == null) {
-  caasppChecked = document.querySelector(".caasppinput").checked;
-} else document.querySelector(".caasppinput").checked = caasppChecked;
 
 /**
  * Render the timer till next event
@@ -279,7 +279,7 @@ if (caasppChecked == null) {
  */
 function renderTimer(times, dayNum) {
   if (dayNum != newDebugDate().getDay()) {
-    generateSchedule(defaultAllSchedules, caasppChecked);
+    generateSchedule(defaultAllSchedules);
   }
 
   nextTime = findNext(times);
