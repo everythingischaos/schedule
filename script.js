@@ -406,6 +406,7 @@ document.querySelectorAll(".caasppinput").forEach((el) => {
   el.addEventListener("change", (e) => {
     let input = e.target;
     caasppChecked = input.checked;
+    generateSchedule(defaultAllSchedules);
     if (hasStorage) {
       localStorage.setItem("caasppChecked", input.checked.toString());
     }
