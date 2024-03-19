@@ -31,7 +31,7 @@ window.onload = (e) => {
         },
         { duration: 100, fill: "forwards" }
       );
-      e.target.parentElement.style.border = "none";
+      e.target.parentElement.style.border = "";
     });
   }
 
