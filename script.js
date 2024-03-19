@@ -217,7 +217,7 @@ window.onload = (e) => {
         // $('.pinput').each(function (i) {
         //   $(this).val(getClassName(String(i + 1)));
         // });
-        for (i = 0; i < periodInputs.length; i++) {
+        for (let i = 0; i < periodInputs.length; i++) {
           periodInputs.item(i).value = getClassName(i + 1)
             ? getClassName(i + 1)
             : "";
