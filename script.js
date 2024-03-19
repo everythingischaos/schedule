@@ -106,7 +106,6 @@ function generateSchedule(allSchedules) {
   let currentSchedule = allSchedules[days[dayNum - 1]];
   let caasppLoaded = false;
   if (caasppChecked) {
-    console.log("caaspp checked and generating woo");
     const curDate = newDebugDate();
     const scheduleId = `CAASPP_${curDate.getDate()}-${curDate.getMonth() + 1}`;
 
@@ -116,7 +115,6 @@ function generateSchedule(allSchedules) {
     }
   }
   if (override && !caasppLoaded) {
-    console.log("woah there's an override and the caaspp schedule is not loaded that's wild");
     const curDate = newDebugDate();
     const dateString = `${curDate.getDate()}-${curDate.getMonth() + 1}-${curDate.getFullYear()}`;
 
@@ -176,6 +174,7 @@ function generateSchedule(allSchedules) {
         parseInt(currentP.name.charAt(0)) != null &&
         getClassName(currentP.name)
       ) {
+        console.log(parseInt(currentP.name.charAt(0)));
         pTitle = currentP.name + ": " + getClassName(currentP.name);
       } else {
         //set it to default if there is no user-defined title
