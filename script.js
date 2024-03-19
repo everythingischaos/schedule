@@ -184,9 +184,7 @@ function generateSchedule(allSchedules) {
 
       //Create table row
       let tr = "<tr";
-      if (currentP.name.includes("walkout")) {
-        tr += ' class="walkout"';
-      } else if (currentP.name == "Break" || currentP.name == "Lunch") {
+      if (currentP.name == "Break" || currentP.name == "Lunch") {
         tr += ' class="break"';
       } else {
         tr += " value=" + currentP.name;
@@ -194,7 +192,7 @@ function generateSchedule(allSchedules) {
       tr += `>
       <td>${pTitle}</td>
       <td>${startAPM}</td>
-      <td>${currentP.name.includes("walkout") ? "~" : ""}${endAPM}</td>
+      <td>${endAPM}</td>
     </tr>`;
       document.getElementById("periods").innerHTML += tr;
     }
@@ -311,8 +309,8 @@ function renderTimer(times, dayNum) {
         document.querySelector("#next").textContent =
           "Until " +
           nextTime.name +
-          (getClassName(nextTime.name.slice(-1))
-            ? ": " + getClassName(nextTime.name.slice(-1))
+          (getClassName(nextTime.name.charAt(0))
+            ? ": " + getClassName(nextTime.name.charAt(0))
             : "");
         prevNext = nextTime;
       }
