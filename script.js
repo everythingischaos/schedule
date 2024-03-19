@@ -5,7 +5,7 @@ window.onload = (e) => {
 
   caasppView.onclick = () => handleCaasppLabel();
   editView.onclick = () => handleEditLabel();
-  for (i = 0; i < periodInputs.length; i++) {
+  for (let i = 0; i < periodInputs.length; i++) {
     periodInputs.item(i).oninput = (e) =>
       setClassName(
         parseInt(
