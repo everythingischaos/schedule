@@ -279,7 +279,7 @@ if (caasppChecked == null) {
  */
 function renderTimer(times, dayNum) {
   if (dayNum != newDebugDate().getDay()) {
-    generateSchedule(defaultAllSchedules);
+    generateSchedule(defaultAllSchedules, caasppChecked);
   }
 
   nextTime = findNext(times);
