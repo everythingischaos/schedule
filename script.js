@@ -106,6 +106,7 @@ function generateSchedule(allSchedules) {
   let currentSchedule = allSchedules[days[dayNum - 1]];
   let caasppLoaded = false;
   if (caasppChecked) {
+    console.log("caaspp checked and generating woo");
     const curDate = newDebugDate();
     const scheduleId = `CAASPP_${curDate.getDate()}-${curDate.getMonth() + 1}`;
 
@@ -115,6 +116,7 @@ function generateSchedule(allSchedules) {
     }
   }
   if (override && !caasppLoaded) {
+    console.log("woah there's an override and the caaspp schedule is not loaded that's wild");
     const curDate = newDebugDate();
     const dateString = `${curDate.getDate()}-${curDate.getMonth() + 1}-${curDate.getFullYear()}`;
 
