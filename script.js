@@ -173,7 +173,7 @@ function generateSchedule(allSchedules) {
       if (
         currentP.name != "Break" &&
         currentP.name != "Lunch" &&
-        parseInt(currentP.charAt(0)) != null &&
+        parseInt(currentP.name.charAt(0)) != null &&
         getClassName(currentP.name)
       ) {
         pTitle = currentP.name + ": " + getClassName(currentP.name);
