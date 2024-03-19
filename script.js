@@ -175,6 +175,7 @@ function generateSchedule(allSchedules) {
         getClassName(currentP.name)
       ) {
         console.log(parseInt(currentP.name.charAt(0)));
+        console.log(currentP.name);
         pTitle = currentP.name + ": " + getClassName(currentP.name);
       } else {
         //set it to default if there is no user-defined title
