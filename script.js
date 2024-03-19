@@ -109,7 +109,7 @@ function generateSchedule(allSchedules) {
     const curDate = newDebugDate();
     const scheduleId = `CAASPP_${curDate.getDate()}-${curDate.getMonth() + 1}`;
 
-    if (allSchedules.contains(scheduleId)) {
+    if (scheduleId in allSchedules) {
       currentSchedule = allSchedules[scheduleId];
       caasppLoaded = true;
     }
