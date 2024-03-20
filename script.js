@@ -50,7 +50,7 @@ window.onload = (e) => {
   let caasppScheduleIsEnabled = false;
   let editViewIsHidden = true;
   if (hasStorage)
-    caasppScheduleIsEnabled = eval(localStorage.getItem("showCaaspp"));
+    if (eval(localStorage.getItem("showCaaspp"))) handleCaasppLabel();
   if (caasppScheduleIsEnabled == null) caasppScheduleIsEnabled = false;
 
   //used to change the time for debugging
@@ -398,6 +398,7 @@ window.onload = (e) => {
 
   function handleCaasppLabel() {
     caasppScheduleIsEnabled = !caasppScheduleIsEnabled;
+    localStorage.setItem("showCaaspp", caasppScheduleIsEnabled);
     console.log(caasppScheduleIsEnabled);
     caasppView.previousElementSibling.textContent = caasppScheduleIsEnabled
       ? "Hide CAASPP Schedule"
@@ -422,11 +423,11 @@ window.onload = (e) => {
 
     editingTable.animate(
       {
-        opacity: editViewIsHidden ? 0 : 1,
-        visibility: editViewIsHidden ? "hidden" : "visible",
+        opacity: editViewIsHidden ? 0 : 1
       },
       { duration: 100, fill: "forwards" }
     );
+    editingTable.style.visibility = editViewIsHidden ? "hidden" : "visible"
   }
 
   /*
