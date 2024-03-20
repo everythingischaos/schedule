@@ -329,7 +329,7 @@ window.onload = (e) => {
           timerDOM.innerHTML =
             text.minutes + ":" + text.seconds + "." + text.milliseconds;
         else */
-        timerDOM.innerHTML = text.minutes + ":" + text.seconds;
+        timerDOM.innerHTML = text.minutes + ":" + text.seconds + "." + text.millisconds;
         if (prevNext != nextItem) {
           document.querySelector("#next").textContent =
             "Until " +
@@ -392,6 +392,7 @@ window.onload = (e) => {
     return {
       minutes: minutes,
       seconds: seconds,
+      millisconds: milliseconds
     };
   }
 
