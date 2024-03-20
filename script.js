@@ -1,4 +1,4 @@
-window.onload = (e) => {
+window.onload = () => {
   const caasppView = document.getElementById("caaspp_view");
   const editView = document.getElementById("edit_view");
   const periodInputs = document.getElementsByClassName("pinput");
@@ -52,19 +52,6 @@ window.onload = (e) => {
   if (hasStorage)
     if (eval(localStorage.getItem("showCaaspp"))) handleCaasppLabel();
   if (caasppScheduleIsEnabled == null) caasppScheduleIsEnabled = false;
-
-  //used to change the time for debugging
-  function newDebugDate() {
-    /*
-    let date = new Date();
-    let hours = 0;
-    let minutes = hours * 60 + 0;
-    let seconds = minutes * 60 + 0;
-    let ms = seconds * 1000 + 0;
-    date.setTime(date.getTime() + ms);
-    */
-    return new Date();
-  }
 
   function checkForChanges() {
     //get the override data for rallies and stuff
@@ -259,7 +246,7 @@ window.onload = (e) => {
    */
   function timeStringToDate(timeString) {
     //create a new date object for current time
-    let output = newDebugDate();
+    let output = new Date();
 
     //create array of x:y [x, y]
     let numbers = timeString.split(":");
@@ -277,13 +264,10 @@ window.onload = (e) => {
    * @returns Returns object with the next event's timestamp and name
    */
   function findNext(timesList) {
-    //create current date
-    let curDate = newDebugDate();
-
     //for every event, check to see if it's passed
     for (let i = 0; i < timesList.length; i++) {
       //if the current time is before the event time, break the loop and return it
-      if (timesList[i].time >= curDate.getTime()) {
+      if (timesList[i].time >= new Date().getTime()) {
         return timesList[i];
       }
     }
@@ -303,14 +287,11 @@ window.onload = (e) => {
    * @param {string} nextEvent.name - System-defined name for the event
    */
   function renderTimer(times, dayNum) {
-    if (dayNum != newDebugDate().getDay()) {
+    if (dayNum != new Date().getDay()) {
       updateTable();
     }
 
     nextItem = findNext(times);
-
-    //Set current date
-    let curDate = newDebugDate();
 
     //define timer element
     let timerDOM = document.getElementById("timer");
@@ -318,7 +299,7 @@ window.onload = (e) => {
     //if there is an event coming up
     if (nextItem) {
       //check if the event is still ahead and not past
-      let difference = nextItem.time - curDate.getTime();
+      let difference = nextItem.time - new Date().getTime();
 
       //Set text to set the timer to, parsed with the msToTime thing
       let text = msToTime(difference);

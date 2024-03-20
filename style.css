@@ -146,7 +146,6 @@ td.pinput_container {
 #edit {
   opacity: 0;
   visibility: hidden;
-  width: 100%;
 }
 
 .alert {
