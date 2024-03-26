@@ -302,11 +302,11 @@ td.pinput_container {
   transition: all 0.5s;
 }
 
-@media (pointer:none), (pointer:coarse) {
+@media (pointer: none), (pointer: coarse) {
   #app {
     width: 100%;
   }
   #controls {
-    width: 100vw;
+    width: 100%;
   }
 }
