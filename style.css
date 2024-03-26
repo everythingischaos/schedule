@@ -63,7 +63,7 @@ body {
   row-gap: 0.3em;
   width: 2.3rem;
   height: 0;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.5s var(--current-easing);
 }
 .color_option_container {
   opacity: 0%;

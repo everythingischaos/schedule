@@ -549,11 +549,11 @@ window.onload = () => {
     colorViewIsHidden
       ? colorViewLabel.classList.remove("selected")
       : colorViewLabel.classList.add("selected");
+    document.documentElement.style.setProperty("--current-easing", colorViewIsHidden ? "cubic-bezier(0.36, 0, 0.66, -0.56)" : "cubic-bezier(0.34, 1.56, 0.64, 1)")
     recursiveAnimateOpacity(
       document.getElementsByClassName("color_option_container"),
       0,
       500,
-      0,
       colorViewIsHidden ? true : false,
       colorViewIsHidden ? "0%" : "100%"
     );
@@ -575,7 +575,6 @@ window.onload = () => {
     elements,
     curIndex,
     duration,
-    offset,
     reverse,
     opacity
   ) {
@@ -589,16 +588,17 @@ window.onload = () => {
       reverse ? elements.length - (curIndex + 1) : curIndex
     ).style.opacity = opacity;
 
+    let interval = (duration / elements.length) * funnyEaseOutBackBecauseWhyNot((curIndex + 1) / elements.length);
+
     setTimeout(() => {
       recursiveAnimateOpacity(
         elements,
         curIndex + 1,
         duration,
-        offset,
         reverse,
         opacity
       );
-    }, (duration / 100) * funnyEaseOutBackBecauseWhyNot((curIndex + 1) / elements.length));
+    }, 0.5 * duration / elements.length);
   }
 
   function handleThemeClick() {
