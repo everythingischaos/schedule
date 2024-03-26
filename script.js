@@ -1,10 +1,28 @@
 window.onload = () => {
+  const themeSwitch = document.getElementById("theme_switch");
+  const colorView = document.getElementById("color_view");
   const caasppView = document.getElementById("caaspp_view");
   const editView = document.getElementById("edit_view");
   const periodInputs = document.getElementsByClassName("pinput");
+  const colorViewLabel = document.getElementById("color_view_label");
+  const colorMenu = document.getElementById("color_menu");
+  const lightDarkLabel = document.getElementById("light_dark_label");
+  const lightDarkIcons = lightDarkLabel.children;
 
-  caasppView.onclick = () => handleCaasppLabel();
-  editView.onclick = () => handleEditLabel();
+  colorView.onclick = (ev) => handleColorViewClick(ev);
+  themeSwitch.onclick = () => handleThemeClick();
+  colorViewLabel.onmouseenter = () => {
+    if (!colorViewLabel.classList.contains("selected"))
+      rotateChildren(colorViewLabel, -15);
+  };
+  colorViewLabel.onmouseleave = () => {
+    if (!colorViewLabel.classList.contains("selected"))
+      rotateChildren(colorViewLabel, 15);
+  };
+  lightDarkLabel.onmouseenter = () => rotateChildren(lightDarkLabel, -15);
+  lightDarkLabel.onmouseleave = () => rotateChildren(lightDarkLabel, 15);
+  caasppView.onclick = () => handleCaasppClick();
+  editView.onclick = () => handleEditClick();
   for (let i = 0; i < periodInputs.length; i++) {
     periodInputs.item(i).oninput = (e) =>
       setClassName(
@@ -17,17 +35,21 @@ window.onload = () => {
     periodInputs.item(i).onfocus = (e) => {
       e.target.parentElement.animate(
         {
-          backgroundColor: "#313244",
+          backgroundColor:
+            document.documentElement.style.getPropertyValue("--surface0-hex"),
         },
         { duration: 100, fill: "forwards" }
       );
-      e.target.parentElement.style.border = "solid 1px #cba6f7";
+      e.target.parentElement.style.border = `solid 1px ${document.documentElement.style.getPropertyValue(
+        "--accent-hex"
+      )}`;
     };
 
     periodInputs.item(i).addEventListener("focusout", (e) => {
       e.target.parentElement.animate(
         {
-          backgroundColor: "#45475a",
+          backgroundColor:
+            document.documentElement.style.getPropertyValue("--surface1-hex"),
         },
         { duration: 100, fill: "forwards" }
       );
@@ -44,14 +66,152 @@ window.onload = () => {
   );
   let days = JSON.parse('["A","E","O","E","O"]');
 
+  // a bunch of random variables i should be sorting why haven't i done this yet
   let latestIntervalID;
   let overrideSchedules;
   let nextItem;
-  let caasppScheduleIsEnabled = false;
+  let palette;
+  let accentColors = [];
+  let recursiveAnimationInProgress = false;
+  let colorViewIsHidden = true;
   let editViewIsHidden = true;
-  if (hasStorage)
-    if (eval(localStorage.getItem("showCaaspp"))) handleCaasppLabel();
-  if (caasppScheduleIsEnabled == null) caasppScheduleIsEnabled = false;
+  let caasppScheduleIsEnabled = false;
+  if (hasStorage && localStorage.getItem("showCaaspp") != null)
+    if (eval(localStorage.getItem("showCaaspp"))) handleCaasppClick();
+  let accentColor = "mauve";
+  if (hasStorage && localStorage.getItem("accentColor") != null)
+    accentColor = localStorage.getItem("accentColor");
+  let themeIsDark = true;
+  if (hasStorage && localStorage.getItem("themeIsDark") != null)
+    if (!eval(localStorage.getItem("themeIsDark"))) handleThemeClick();
+
+  function loadTheme() {
+    if (palette == null) return;
+    const selectedPalette = palette[themeIsDark ? "mocha" : "frappe"]["colors"];
+
+    document.documentElement.style.setProperty(
+      "--text-hex",
+      selectedPalette["text"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--subtext1-hex",
+      selectedPalette["subtext1"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--subtext0-hex",
+      selectedPalette["subtext0"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--overlay2-hex",
+      selectedPalette["overlay2"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--overlay1-hex",
+      selectedPalette["overlay1"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--overlay0-hex",
+      selectedPalette["overlay0"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--surface2-hex",
+      selectedPalette["surface2"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--surface1-hex",
+      selectedPalette["surface1"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--surface0-hex",
+      selectedPalette["surface0"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--base-hex",
+      selectedPalette["base"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--mantle-hex",
+      selectedPalette["mantle"]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--crust-hex",
+      selectedPalette["crust"]["hex"]
+    );
+
+    document.documentElement.style.setProperty(
+      "--accent-hex",
+      selectedPalette[accentColor]["hex"]
+    );
+    document.documentElement.style.setProperty(
+      "--accent-h",
+      selectedPalette[accentColor]["hsl"]["h"]
+    );
+    document.documentElement.style.setProperty(
+      "--accent-s",
+      `${selectedPalette[accentColor]["hsl"]["s"] * 100}%`
+    );
+    document.documentElement.style.setProperty(
+      "--accent-l",
+      `${selectedPalette[accentColor]["hsl"]["l"] * 100}%`
+    );
+  }
+
+  function populateColorMenu() {
+    if (palette == null) return;
+
+    colorMenu.innerHTML = "";
+
+    accentColors = [];
+    const selectedPalette = palette[themeIsDark ? "mocha" : "frappe"]["colors"];
+    const template =
+      '<div class="color_option_container"><label id="%ID%_label" class="color_option_label" for="%ID%" style="background-color: var(--%ID%-hex)"></label><input type="button" id="%ID%" hidden=""></div>';
+
+    for (var key in selectedPalette) {
+      if (!selectedPalette[key]["accent"]) continue;
+
+      accentColors.push(key);
+
+      let div = document.createElement("div");
+      div.classList.add("color_option_container");
+      if (key == accentColor) div.classList.add("selected");
+
+      let label = document.createElement("label");
+      label.classList.add("color_option_label");
+      label.id = `${key}_label`;
+      label.htmlFor = key;
+      label.style.backgroundColor = `var(--${key}-hex)`;
+
+      let input = document.createElement("input");
+      input.id = key;
+      input.type = "button";
+      input.hidden = true;
+      input.onclick = (ev) => handleColorOptionClick(ev);
+
+      div.appendChild(label);
+      div.appendChild(input);
+
+      document.documentElement.style.setProperty(
+        `--${key}-hex`,
+        selectedPalette[key]["hex"]
+      );
+      colorMenu.appendChild(div);
+    }
+  }
+
+  function receivePalette() {
+    fetch(
+      "https://raw.githubusercontent.com/catppuccin/palette/main/palette.json"
+    ).then(
+      async (data) => {
+        palette = await data.json();
+        loadTheme();
+        populateColorMenu();
+      },
+      () => {
+        // load default theme or something
+      }
+    );
+  }
 
   function checkForChanges() {
     //get the override data for rallies and stuff
@@ -91,6 +251,7 @@ window.onload = () => {
     );
   }
 
+  receivePalette();
   checkForChanges();
   setInterval(checkForChanges, 10000);
 
@@ -310,7 +471,8 @@ window.onload = () => {
           timerDOM.innerHTML =
             text.minutes + ":" + text.seconds + "." + text.milliseconds;
         else */
-        timerDOM.innerHTML = text.minutes + ":" + text.seconds + "." + text.millisconds;
+        timerDOM.innerHTML =
+          text.minutes + ":" + text.seconds + "." + text.millisconds;
         if (prevNext != nextItem) {
           document.querySelector("#next").textContent =
             "Until " +
@@ -373,14 +535,88 @@ window.onload = () => {
     return {
       minutes: minutes,
       seconds: seconds,
-      millisconds: milliseconds
+      millisconds: milliseconds,
     };
   }
 
-  function handleCaasppLabel() {
+  function handleColorViewClick() {
+    if (recursiveAnimationInProgress) return;
+    colorViewIsHidden = !colorViewIsHidden;
+    colorMenu.style.height = colorViewIsHidden
+      ? "0"
+      : `${accentColors.length * 2.3 + accentColors.length * 0.3}rem`;
+    colorMenu.style.padding = colorViewIsHidden ? "0" : "0.3rem";
+    colorViewIsHidden
+      ? colorViewLabel.classList.remove("selected")
+      : colorViewLabel.classList.add("selected");
+    recursiveAnimateOpacity(
+      document.getElementsByClassName("color_option_container"),
+      0,
+      500,
+      0,
+      colorViewIsHidden ? true : false,
+      colorViewIsHidden ? "0%" : "100%"
+    );
+    rotateChildren(colorViewLabel, 360);
+  }
+
+  function handleColorOptionClick(event) {
+    if (event.target.id == accentColor || !editViewIsHidden || recursiveAnimationInProgress) return;
+
+    document.getElementById(`${accentColor}_label`).parentElement.classList.remove("selected");
+    accentColor = event.target.id;
+    localStorage.setItem("accentColor", accentColor)
+    event.target.parentElement.classList.add("selected");
+
+    loadTheme();
+  }
+
+  function recursiveAnimateOpacity(
+    elements,
+    curIndex,
+    duration,
+    offset,
+    reverse,
+    opacity
+  ) {
+    recursiveAnimationInProgress = true;
+    if (curIndex >= elements.length || curIndex < 0) {
+      recursiveAnimationInProgress = false;
+      return;
+    }
+
+    elements.item(
+      reverse ? elements.length - (curIndex + 1) : curIndex
+    ).style.opacity = opacity;
+
+    setTimeout(() => {
+      recursiveAnimateOpacity(
+        elements,
+        curIndex + 1,
+        duration,
+        offset,
+        reverse,
+        opacity
+      );
+    }, (duration / 100) * funnyEaseOutBackBecauseWhyNot((curIndex + 1) / elements.length));
+  }
+
+  function handleThemeClick() {
+    themeIsDark = !themeIsDark;
+    localStorage.setItem("themeIsDark", themeIsDark);
+    lightDarkIcons
+      .item(0)
+      .style.setProperty("opacity", themeIsDark ? "100%" : "0%");
+    lightDarkIcons
+      .item(1)
+      .style.setProperty("opacity", themeIsDark ? "0%" : "100%");
+    rotateChildren(lightDarkLabel, 360);
+    loadTheme();
+  }
+
+  function handleCaasppClick() {
     caasppScheduleIsEnabled = !caasppScheduleIsEnabled;
     localStorage.setItem("showCaaspp", caasppScheduleIsEnabled);
-    console.log(caasppScheduleIsEnabled);
     caasppView.previousElementSibling.textContent = caasppScheduleIsEnabled
       ? "Hide CAASPP Schedule"
       : "Show CAASPP Schedule";
@@ -390,9 +626,8 @@ window.onload = () => {
     updateTable();
   }
 
-  function handleEditLabel() {
+  function handleEditClick() {
     editViewIsHidden = !editViewIsHidden;
-    console.log(editViewIsHidden);
     editView.previousElementSibling.textContent = editViewIsHidden
       ? "Edit Schedule"
       : "Close";
@@ -404,11 +639,44 @@ window.onload = () => {
 
     editingTable.animate(
       {
-        opacity: editViewIsHidden ? 0 : 1
+        opacity: editViewIsHidden ? 0 : 1,
       },
       { duration: 100, fill: "forwards" }
     );
-    editingTable.style.visibility = editViewIsHidden ? "hidden" : "visible"
+    editingTable.style.visibility = editViewIsHidden ? "hidden" : "visible";
+  }
+
+  function rotateChildren(element, degrees) {
+    for (let i = 0; i < element.children.length; i++) {
+      const targetTransform = element.children
+        .item(i)
+        .style.getPropertyValue("transform");
+      let origDegrees = 0;
+      if (targetTransform.includes("rotate")) {
+        origDegrees += parseInt(
+          targetTransform.substring(
+            targetTransform.lastIndexOf("rotate") + 7,
+            targetTransform.lastIndexOf("deg)")
+          )
+        );
+      }
+      element.children
+        .item(0)
+        .style.setProperty("transform", `rotate(${origDegrees + degrees}deg)`);
+      element.children
+        .item(i)
+        .style.setProperty(
+          "-webkit-transform",
+          `rotate(${origDegrees + degrees}deg)`
+        );
+    }
+  }
+
+  function funnyEaseOutBackBecauseWhyNot(t) {
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
   }
 
   /*
@@ -458,9 +726,4 @@ window.onload = () => {
       }
     }
   }
-
-  document.querySelector("#alert-close").addEventListener("click", () => {
-    document.querySelector(".alert").classList.remove("alert-visible");
-    alertHidden = true;
-  });
 };
