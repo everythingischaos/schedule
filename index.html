@@ -52,6 +52,7 @@
     </div>
     <label id="light_dark_label" class="theme_label" for="theme_switch">
       <svg
+        id="latte"
         class="icon icon-sun"
         xmlns="http://www.w3.org/2000/svg"
         width="2.3rem"
@@ -68,6 +69,24 @@
         />
       </svg>
       <svg
+        id="frappe"
+        class="icon icon-cloud-sun"
+        xmlns="http://www.w3.org/2000/svg"
+        width="2.3rem"
+        height="2.3rem"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--text-hex)"
+      >
+        <path
+          d="M7.45508 2V3M11.3438 3.61084L10.6366 4.31795M4.27344 10.6821L3.56633 11.3892M1.95508 7.5H2.95508M3.56641 3.61084L4.27351 4.31795M6.50049 9.21251C6.38862 9.15163 6.2832 9.08038 6.18553 9.00006C5.73952 8.63325 5.45508 8.07714 5.45508 7.45459C5.45508 6.35002 6.35051 5.45459 7.45508 5.45459C8.21398 5.45459 8.87416 5.87727 9.21303 6.50006C9.29756 6.65541 9.3621 6.82321 9.40319 7M9.8 21C7.14903 21 5 18.9466 5 16.4137C5 14.3144 6.6 12.375 9 12C9.75283 10.274 11.5346 9 13.6127 9C16.2747 9 18.4504 10.9907 18.6 13.5C20.0127 14.0956 21 15.5574 21 17.1402C21 19.2719 19.2091 21 17 21L9.8 21Z"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <svg
+        id="macchiato"
         class="icon icon-moon"
         xmlns="http://www.w3.org/2000/svg"
         width="2.3rem"
@@ -83,18 +102,40 @@
           stroke-linejoin="round"
         />
       </svg>
+      <svg
+      id="mocha"
+        class="icon icon-moon-stars"
+        xmlns="http://www.w3.org/2000/svg"
+        width="2.3rem"
+        height="2.3rem"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--text-hex)"
+      >
+        <path
+          d="M13 6V3M18.5 12V7M14.5 4.5H11.5M21 9.5H16M15.5548 16.8151C16.7829 16.8151 17.9493 16.5506 19 16.0754C17.6867 18.9794 14.7642 21 11.3698 21C6.74731 21 3 17.2527 3 12.6302C3 9.23576 5.02061 6.31331 7.92462 5C7.44944 6.05072 7.18492 7.21708 7.18492 8.44523C7.18492 13.0678 10.9322 16.8151 15.5548 16.8151Z"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
     </label>
     <input type="button" id="theme_switch" hidden="" />
     <div id="app">
-      <div class="alert">
-        <span id="alert-text">Network error! Schedule may be inaccurate.</span
-        ><img
-          id="alert-close"
-          src="x-symbol.svg"
-          alt="Close"
-          width="30px"
-          height="30px"
-        />
+      <div class="error">
+        <span id="error-text">Connection Lost</span>
+        <svg
+          class="icon icon-error"
+          xmlns="http://www.w3.org/2000/svg"
+          width="2rem"
+          height="2rem"
+          viewBox="0 0 64 64"
+          fill="var(--red-hex)"
+        >
+          <path
+            d="M32.085,56.058c6.165,-0.059 12.268,-2.619 16.657,-6.966c5.213,-5.164 7.897,-12.803 6.961,-20.096c-1.605,-12.499 -11.855,-20.98 -23.772,-20.98c-9.053,0 -17.853,5.677 -21.713,13.909c-2.955,6.302 -2.96,13.911 0,20.225c3.832,8.174 12.488,13.821 21.559,13.908c0.103,0.001 0.205,0.001 0.308,0Zm-0.282,-4.003c-9.208,-0.089 -17.799,-7.227 -19.508,-16.378c-1.204,-6.452 1.07,-13.433 5.805,-18.015c5.53,-5.35 14.22,-7.143 21.445,-4.11c6.466,2.714 11.304,9.014 12.196,15.955c0.764,5.949 -1.366,12.184 -5.551,16.48c-3.672,3.767 -8.82,6.016 -14.131,6.068c-0.085,0 -0.171,0 -0.256,0Zm-12.382,-10.29l9.734,-9.734l-9.744,-9.744l2.804,-2.803l9.744,9.744l10.078,-10.078l2.808,2.807l-10.078,10.079l10.098,10.098l-2.803,2.804l-10.099,-10.099l-9.734,9.734l-2.808,-2.808Z"
+          />
+        </svg>
       </div>
       <div id="times">
         <table>

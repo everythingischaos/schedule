@@ -71,72 +71,48 @@ window.onload = () => {
   let overrideSchedules;
   let nextItem;
   let palette;
+  let themeIDs = [];
   let accentColors = [];
   let recursiveAnimationInProgress = false;
   let colorViewIsHidden = true;
   let editViewIsHidden = true;
   let caasppScheduleIsEnabled = false;
-  if (hasStorage && localStorage.getItem("showCaaspp") != null)
+  if (
+    hasStorage &&
+    localStorage.getItem("showCaaspp") != null &&
+    localStorage.getItem("showCaaspp") != undefined
+  )
     if (eval(localStorage.getItem("showCaaspp"))) handleCaasppClick();
   let accentColor = "mauve";
-  if (hasStorage && localStorage.getItem("accentColor") != null)
+  if (
+    hasStorage &&
+    localStorage.getItem("accentColor") != null &&
+    localStorage.getItem("accentColor") != undefined
+  )
     accentColor = localStorage.getItem("accentColor");
-  let themeIsDark = true;
-  if (hasStorage && localStorage.getItem("themeIsDark") != null)
-    if (!eval(localStorage.getItem("themeIsDark"))) handleThemeClick();
+  let themeID = "mocha";
+  if (
+    hasStorage &&
+    localStorage.getItem("themeID") != null &&
+    localStorage.getItem("themeID") != undefined
+  )
+    themeID = localStorage.getItem("themeID");
 
   function loadTheme() {
     if (palette == null) return;
-    const selectedPalette = palette[themeIsDark ? "mocha" : "frappe"]["colors"];
+    themeIDs = [];
+    for (var key in palette) {
+      themeIDs.push(key);
+    }
+    console.log(themeID);
+    const selectedPalette = palette[themeID]["colors"];
 
-    document.documentElement.style.setProperty(
-      "--text-hex",
-      selectedPalette["text"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--subtext1-hex",
-      selectedPalette["subtext1"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--subtext0-hex",
-      selectedPalette["subtext0"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--overlay2-hex",
-      selectedPalette["overlay2"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--overlay1-hex",
-      selectedPalette["overlay1"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--overlay0-hex",
-      selectedPalette["overlay0"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--surface2-hex",
-      selectedPalette["surface2"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--surface1-hex",
-      selectedPalette["surface1"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--surface0-hex",
-      selectedPalette["surface0"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--base-hex",
-      selectedPalette["base"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--mantle-hex",
-      selectedPalette["mantle"]["hex"]
-    );
-    document.documentElement.style.setProperty(
-      "--crust-hex",
-      selectedPalette["crust"]["hex"]
-    );
+    for (var key in selectedPalette) {
+      document.documentElement.style.setProperty(
+        `--${key}-hex`,
+        selectedPalette[key]["hex"]
+      );
+    }
 
     document.documentElement.style.setProperty(
       "--accent-hex",
@@ -154,6 +130,15 @@ window.onload = () => {
       "--accent-l",
       `${selectedPalette[accentColor]["hsl"]["l"] * 100}%`
     );
+
+    for (let i = 0; i < lightDarkIcons.length; i++) {
+      lightDarkIcons
+        .item(i)
+        .style.setProperty(
+          "opacity",
+          lightDarkIcons.item(i).id == themeID ? "100%" : "0%"
+        );
+    }
   }
 
   function populateColorMenu() {
@@ -162,9 +147,7 @@ window.onload = () => {
     colorMenu.innerHTML = "";
 
     accentColors = [];
-    const selectedPalette = palette[themeIsDark ? "mocha" : "frappe"]["colors"];
-    const template =
-      '<div class="color_option_container"><label id="%ID%_label" class="color_option_label" for="%ID%" style="background-color: var(--%ID%-hex)"></label><input type="button" id="%ID%" hidden=""></div>';
+    const selectedPalette = palette[themeID]["colors"];
 
     for (var key in selectedPalette) {
       if (!selectedPalette[key]["accent"]) continue;
@@ -190,10 +173,6 @@ window.onload = () => {
       div.appendChild(label);
       div.appendChild(input);
 
-      document.documentElement.style.setProperty(
-        `--${key}-hex`,
-        selectedPalette[key]["hex"]
-      );
       colorMenu.appendChild(div);
     }
   }
@@ -228,7 +207,7 @@ window.onload = () => {
         }
       },
       () => {
-        showAlert("Connection Lost");
+        // showError("Connection Lost");
       }
     );
 
@@ -246,7 +225,7 @@ window.onload = () => {
         }
       },
       () => {
-        showAlert("Connection Lost");
+        // showError("Connection Lost");
       }
     );
   }
@@ -549,7 +528,12 @@ window.onload = () => {
     colorViewIsHidden
       ? colorViewLabel.classList.remove("selected")
       : colorViewLabel.classList.add("selected");
-    document.documentElement.style.setProperty("--current-easing", colorViewIsHidden ? "cubic-bezier(0.36, 0, 0.66, -0.56)" : "cubic-bezier(0.34, 1.56, 0.64, 1)")
+    document.documentElement.style.setProperty(
+      "--current-easing",
+      colorViewIsHidden
+        ? "cubic-bezier(0.36, 0, 0.66, -0.56)"
+        : "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    );
     recursiveAnimateOpacity(
       document.getElementsByClassName("color_option_container"),
       0,
@@ -561,11 +545,18 @@ window.onload = () => {
   }
 
   function handleColorOptionClick(event) {
-    if (event.target.id == accentColor || !editViewIsHidden || recursiveAnimationInProgress) return;
+    if (
+      event.target.id == accentColor ||
+      !editViewIsHidden ||
+      recursiveAnimationInProgress
+    )
+      return;
 
-    document.getElementById(`${accentColor}_label`).parentElement.classList.remove("selected");
+    document
+      .getElementById(`${accentColor}_label`)
+      .parentElement.classList.remove("selected");
     accentColor = event.target.id;
-    localStorage.setItem("accentColor", accentColor)
+    localStorage.setItem("accentColor", accentColor);
     event.target.parentElement.classList.add("selected");
 
     loadTheme();
@@ -588,7 +579,9 @@ window.onload = () => {
       reverse ? elements.length - (curIndex + 1) : curIndex
     ).style.opacity = opacity;
 
-    let interval = (duration / elements.length) * funnyEaseOutBackBecauseWhyNot((curIndex + 1) / elements.length);
+    let interval =
+      (duration / elements.length) *
+      funnyEaseOutBackBecauseWhyNot((curIndex + 1) / elements.length);
 
     setTimeout(() => {
       recursiveAnimateOpacity(
@@ -598,18 +591,13 @@ window.onload = () => {
         reverse,
         opacity
       );
-    }, 0.5 * duration / elements.length);
+    }, (0.5 * duration) / elements.length);
   }
 
   function handleThemeClick() {
-    themeIsDark = !themeIsDark;
-    localStorage.setItem("themeIsDark", themeIsDark);
-    lightDarkIcons
-      .item(0)
-      .style.setProperty("opacity", themeIsDark ? "100%" : "0%");
-    lightDarkIcons
-      .item(1)
-      .style.setProperty("opacity", themeIsDark ? "0%" : "100%");
+    themeID = themeIDs[(themeIDs.indexOf(themeID) + 1) % themeIDs.length];
+    localStorage.setItem("themeID", themeID);
+
     rotateChildren(lightDarkLabel, 360);
     loadTheme();
   }
@@ -716,14 +704,11 @@ window.onload = () => {
     }
   }
 
-  let alertHidden = false;
-  function showAlert(text) {
-    if (!alertHidden) {
-      const alert = document.querySelector(".alert");
-      document.querySelector("#alert-text").textContent = text;
-      if (!alert.classList.contains("alert-visible")) {
-        alert.classList.add("alert-visible");
-      }
-    }
+  function showError(text) {
+    const error = document.getElementById("error");
+  }
+
+  function hideError() {
+    const error = document.getElementById("error");
   }
 };
