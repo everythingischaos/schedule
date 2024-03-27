@@ -248,6 +248,7 @@ td.pinput_container {
 #edit {
   opacity: 0;
   visibility: hidden;
+  width: 25vw;
 }
 
 .error {
@@ -293,6 +294,9 @@ td.pinput_container {
     width: 100%;
   }
   #controls {
+    width: 100%;
+  }
+  #edit {
     width: 100%;
   }
 }

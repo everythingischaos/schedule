@@ -1,7 +1,7 @@
 window.onload = () => {
   const themeSwitch = document.getElementById("theme_switch");
   const colorView = document.getElementById("color_view");
-  const caasppView = document.getElementById("caaspp_view");
+  const millisecondView = document.getElementById("millisecond_view");
   const editView = document.getElementById("edit_view");
   const periodInputs = document.getElementsByClassName("pinput");
   const colorViewLabel = document.getElementById("color_view_label");
@@ -21,7 +21,7 @@ window.onload = () => {
   };
   lightDarkLabel.onmouseenter = () => rotateChildren(lightDarkLabel, -15);
   lightDarkLabel.onmouseleave = () => rotateChildren(lightDarkLabel, 15);
-  caasppView.onclick = () => handleCaasppClick();
+  millisecondView.onclick = () => handleMillisecondClick();
   editView.onclick = () => handleEditClick();
   for (let i = 0; i < periodInputs.length; i++) {
     periodInputs.item(i).oninput = (e) =>
@@ -76,13 +76,13 @@ window.onload = () => {
   let recursiveAnimationInProgress = false;
   let colorViewIsHidden = true;
   let editViewIsHidden = true;
-  let caasppScheduleIsEnabled = false;
+  let millisecondsAreEnabled = false;
   if (
     hasStorage &&
-    localStorage.getItem("showCaaspp") != null &&
-    localStorage.getItem("showCaaspp") != undefined
+    localStorage.getItem("showMs") != null &&
+    localStorage.getItem("showMs") != undefined
   )
-    if (eval(localStorage.getItem("showCaaspp"))) handleCaasppClick();
+    if (eval(localStorage.getItem("showMs"))) handleMillisecondClick();
   let accentColor = "mauve";
   if (
     hasStorage &&
@@ -242,6 +242,7 @@ window.onload = () => {
     let date = new Date();
     let currentSchedule = allSchedules[days[date.getDay() - 1]];
     let caasppLoaded = false;
+    /*
     if (caasppScheduleIsEnabled) {
       const scheduleId = `CAASPP_${date.getDate()}-${date.getMonth() + 1}`;
 
@@ -250,6 +251,7 @@ window.onload = () => {
         caasppLoaded = true;
       }
     }
+    */
     if (overrideSchedules && !caasppLoaded) {
       const dateString = `${date.getDate()}-${
         date.getMonth() + 1
@@ -341,9 +343,6 @@ window.onload = () => {
           document.getElementById("periods").innerHTML += tr;
         }
 
-        // $('.pinput').each(function (i) {
-        //   $(this).val(getClassName(String(i + 1)));
-        // });
         for (let i = 0; i < periodInputs.length; i++) {
           periodInputs.item(i).value = getClassName(i + 1)
             ? getClassName(i + 1)
@@ -450,8 +449,9 @@ window.onload = () => {
           timerDOM.innerHTML =
             text.minutes + ":" + text.seconds + "." + text.milliseconds;
         else */
-        timerDOM.innerHTML =
-          text.minutes + ":" + text.seconds + "." + text.millisconds;
+        timerDOM.innerHTML = `${text.minutes}:${text.seconds}${
+          millisecondsAreEnabled ? "." + text.millisconds : ""
+        }`;
         if (prevNext != nextItem) {
           document.querySelector("#next").textContent =
             "Until " +
@@ -501,15 +501,6 @@ window.onload = () => {
           ? "00" + milliseconds
           : "0" + milliseconds
         : milliseconds;
-
-    /*
-    if (msChecked)
-      return {
-        minutes: minutes,
-        seconds: seconds,
-        milliseconds: milliseconds,
-      };
-    */
 
     return {
       minutes: minutes,
@@ -602,16 +593,15 @@ window.onload = () => {
     loadTheme();
   }
 
-  function handleCaasppClick() {
-    caasppScheduleIsEnabled = !caasppScheduleIsEnabled;
-    localStorage.setItem("showCaaspp", caasppScheduleIsEnabled);
-    caasppView.previousElementSibling.textContent = caasppScheduleIsEnabled
-      ? "Hide CAASPP Schedule"
-      : "Show CAASPP Schedule";
-    caasppScheduleIsEnabled
-      ? caasppView.previousElementSibling.classList.add("selected")
-      : caasppView.previousElementSibling.classList.remove("selected");
-    updateTable();
+  function handleMillisecondClick() {
+    millisecondsAreEnabled = !millisecondsAreEnabled;
+    localStorage.setItem("showMs", millisecondsAreEnabled);
+    millisecondView.previousElementSibling.textContent = millisecondsAreEnabled
+      ? "Hide Milliseconds"
+      : "Show Milliseconds";
+    millisecondsAreEnabled
+      ? millisecondView.previousElementSibling.classList.add("selected")
+      : millisecondView.previousElementSibling.classList.remove("selected");
   }
 
   function handleEditClick() {
