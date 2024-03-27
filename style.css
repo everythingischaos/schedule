@@ -101,7 +101,7 @@ body {
   z-index: 1;
 }
 #color_view_label.selected {
-  background-color: var(--overlay0-hex);
+  background-color: var(--surface2-hex);
 }
 #color_view_label.selected .icon-palette {
   fill: var(--accent-hex);
