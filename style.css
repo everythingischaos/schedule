@@ -101,10 +101,10 @@ body {
   z-index: 1;
 }
 #color_view_label.selected {
-  background-color: var(--surface2-hex);
+  background-color: var(--accent-hex);
 }
 #color_view_label.selected .icon-palette {
-  fill: var(--accent-hex);
+  fill: var(--base-hex);
 }
 .theme_label:hover {
   background-color: var(--surface0-hex);
@@ -131,9 +131,7 @@ body {
 
 #app {
   width: 100vh;
-  margin-top: 2.9rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   padding: 2rem;
 }
 
@@ -218,12 +216,12 @@ td.pinput_container {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--base-hex);
+  background-color: var(--surface0-hex);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 .control_label:hover {
-  background-color: var(--mantle-hex);
+  background-color: var(--base-hex);
   border-color: var(--accent-hex);
   color: var(--accent-hex);
 }
@@ -291,6 +289,9 @@ td.pinput_container {
 
 @media (pointer: none), (pointer: coarse) {
   #app {
+    margin-top: 2.9rem;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
   }
   #controls {
