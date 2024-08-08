@@ -538,7 +538,7 @@ window.onload = () => {
   function handleColorOptionClick(event) {
     if (
       event.target.id == accentColor ||
-      !colorViewIsHidden ||
+      colorViewIsHidden ||
       recursiveAnimationInProgress
     )
       return;
